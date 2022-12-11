@@ -32,6 +32,10 @@ export class AppUser {
     return userCredential.user;
   }
 
+  async logout() {
+    await auth.signOut();
+  }
+
   addTopic(topicName: string) {
     this.topics.push(topicName);
   }
