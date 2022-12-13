@@ -8,3 +8,6 @@ extends:
   - tuxsnct/typescript
 parserOptions:
   project: ./tsconfig.json
+rules:
+  no-undefined: 0
+  "@emotion/syntax-preference": [2, "object"]
