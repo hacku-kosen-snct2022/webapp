@@ -9,6 +9,7 @@ import { getFirestore } from 'firebase/firestore'
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
+  // eslint-disable-next-line no-secrets/no-secrets
   apiKey: 'AIzaSyBwzQFq_Hv6FwjPrKbdqKhW8zyKEko1lLQ',
   appId: '1:888588673875:web:7a687e8c14a09a80d737a6',
   authDomain: 'hackukosen.firebaseapp.com',
@@ -23,4 +24,5 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig)
 export const db = getFirestore(app)
 export const auth = getAuth(app)
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const analytics = getAnalytics(app)

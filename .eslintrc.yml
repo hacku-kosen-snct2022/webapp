@@ -6,5 +6,18 @@ extends:
   - tuxsnct
   - tuxsnct/react
   - tuxsnct/typescript
+plugins:
+  - disable
+processor: disable/disable
+overrides:
+  -
+    files:
+      - ./**/*.{js,jsx,ts,tsx,json,yaml,yml,toml}
+    settings:
+      disable/plugins:
+        - unicorn
 parserOptions:
   project: ./tsconfig.json
+rules:
+  max-params: 0
+  no-undefined: 0

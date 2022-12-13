@@ -7,7 +7,7 @@
   },
   "scripts": {
     "build": "vite build",
-    "lint": "eslint './**/*.{js,jsx,ts,tsx,json,yaml,yml,toml}'",
+    "lint": "eslint './**/*.{js,jsx,ts,tsx,yaml,toml}'",
     "lint:fix": "npm run lint --fix",
     "start": "vite",
     "type": "tsc --noEmit",
@@ -27,6 +27,7 @@
     "@vitejs/plugin-react": "3.0.0",
     "eslint": "8.29.0",
     "eslint-config-tuxsnct": "latest",
+    "eslint-plugin-disable": "^2.0.3",
     "jsdom": "^20.0.3",
     "typescript": "4.9.4",
     "vite": "4.0.0",

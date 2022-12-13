@@ -1,9 +1,12 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { getAuth, signInWithPopup, GoogleAuthProvider, User } from 'firebase/auth'
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { getDocs, doc, collection, CollectionReference, DocumentData, setDoc } from 'firebase/firestore'
 import { db as database, auth } from '../firebase'
 
 import { unitpost } from './post'
-import { timeLine } from './timeLine'
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { TimeLine } from './timeLine'
 export class AppUser {
   user?: User
   uid = ''
@@ -13,8 +16,12 @@ export class AppUser {
   dbRef: CollectionReference<DocumentData> | null = null
   constructor (user: User) {
     this.uid = user.uid
-    this.name = user.displayName!
-    this.email = user.email!
+    if (user.displayName !== null) {
+      this.name = user.displayName
+    }
+    if (user.email !== null) {
+      this.email = user.email
+    }
     this.dbRef = collection(database, this.uid)
   }
 
@@ -26,12 +33,13 @@ export class AppUser {
     const provider = new GoogleAuthProvider()
     const userCredential = await signInWithPopup(auth, provider)
     const credential = GoogleAuthProvider.credentialFromResult(userCredential)
-    if (!credential) return
+    if (!credential) return {}
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const token = credential.accessToken
     return userCredential.user
   }
 
-  async logout () {
+  static async logout () {
     await auth.signOut()
   }
 
@@ -39,8 +47,8 @@ export class AppUser {
     this.topics.push(topicName)
   }
 
-  async post (topicName: string, post: unitpost, isReWirte = false) {
-    const tl = await timeLine.getTimeLine(topicName)
+  static async post (topicName: string, post: unitpost, isReWirte = false) {
+    const tl = await TimeLine.getTimeLine(topicName)
     if (tl === undefined) return
     await tl.post(post, isReWirte)
   }

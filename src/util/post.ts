@@ -1,4 +1,6 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { getDoc, doc } from 'firebase/firestore'
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { db as database, auth } from '../firebase'
 
 export class unitpost {
