@@ -10,7 +10,7 @@ export const Timeline: React.FC<TimelineProperties> = ({
 }) => (
   <div
     css={{
-      ...tw`flex flex-col w-full h-full justify-start items-center px-4 gap-4`
+      ...tw`flex flex-col w-full h-auto justify-start items-center pb-4 gap-4`
     }}
   >
     {children}

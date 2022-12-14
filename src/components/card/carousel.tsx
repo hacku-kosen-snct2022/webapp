@@ -8,7 +8,7 @@ type CarouselProperties = {
 
 export const Carousel: React.FC<CarouselProperties> = ({ children, ref }) => (
   <div
-    tw="flex w-full h-full p-16 gap-8 sm:gap-16 md:gap-32 lg:gap-64 overflow-x-auto snap-x snap-mandatory"
+    tw="flex w-full h-full p-16 gap-8 sm:gap-16 md:gap-32 lg:gap-64 xl:gap-96 overflow-x-auto snap-x snap-mandatory"
     ref={ref}
   >
     <div tw="aspect-[1/3] lg:aspect-square h-full" />

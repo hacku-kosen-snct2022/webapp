@@ -1,4 +1,5 @@
 export * from './layout'
 export * from './main'
+export * from './dialog'
 export * from './navbar'
 export * from './spinner'

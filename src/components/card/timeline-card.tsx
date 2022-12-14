@@ -28,7 +28,7 @@ export const TimelineCard: React.FC<TimelineCardProperties> = ({
       ...direction,
       ...justifyContent,
       ...alignItems,
-      ...tw`flex w-full gap-4`
+      ...tw`flex w-full gap-4 cursor-pointer duration-300`
     }}
   >
     {children}

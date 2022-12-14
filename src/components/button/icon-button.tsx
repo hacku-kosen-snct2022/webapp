@@ -6,7 +6,8 @@ import { BaseButtonProperties } from './'
 type IconButtonProperties = BaseButtonProperties
   & {
     icon: string,
-    iconSize?: string | number
+    iconSize?: string | number,
+    customStyles?: TwStyle
   } & ({
     label?: never,
     labelSize?: never,
@@ -29,7 +30,7 @@ export const IconButton: React.FC<IconButtonProperties> = ({
   iconSize = '1.5rem',
   color = tw`text-black`,
   padding = tw`p-4`,
-  backgroundColor = tw`bg-neutral-300 hover:bg-neutral-400 active:bg-neutral-500`,
+  backgroundColor = tw`bg-neutral-300 hover:bg-neutral-400 active:bg-neutral-500 disabled:bg-neutral-200`,
   shadow = tw`shadow shadow-neutral-300`,
   label,
   labelSize = tw`text-base`,
@@ -37,21 +38,26 @@ export const IconButton: React.FC<IconButtonProperties> = ({
   alwaysVisibleLabel = false,
   width = tw`w-12`,
   height = tw`h-12`,
-  onClick
+  customStyles,
+  onClick,
+  disabled
 }) => (
   <button
     css={{
-      ...(label ? labelSize : {}),
-      ...(label ? {} : width),
+      ...(label && labelSize),
+      ...(!label && width),
       ...height,
-      ...(label ? {} : tw`aspect-square`),
+      ...(!label && tw`aspect-square`),
       ...padding,
       ...backgroundColor,
       ...shadow,
       ...color,
-      ...tw`flex justify-center items-center gap-2 rounded-xl aspect-square sm:aspect-auto whitespace-nowrap`
+      ...customStyles,
+      ...tw`flex justify-center items-center gap-2 rounded-xl
+            aspect-square sm:aspect-auto duration-300 whitespace-nowrap`
     }}
     onClick={onClick}
+    disabled={disabled}
   >
     {
       (label && labelPosition === 'left') &&

@@ -8,7 +8,7 @@ type TextButtonProperties = BaseButtonProperties & {
 
 export const TextButton: React.FC<TextButtonProperties> = ({
   label,
-  padding = tw`p-4`,
+  padding = tw`px-4 py-2`,
   color = tw`text-black`,
   backgroundColor = tw`bg-neutral-300 hover:bg-neutral-400 active:bg-neutral-500`,
   shadow = tw`shadow shadow-neutral-300`,
@@ -20,7 +20,7 @@ export const TextButton: React.FC<TextButtonProperties> = ({
       ...color,
       ...backgroundColor,
       ...shadow,
-      ...tw`rounded-xl`
+      ...tw`rounded-xl duration-300`
     }}
     onClick={onClick}
   >

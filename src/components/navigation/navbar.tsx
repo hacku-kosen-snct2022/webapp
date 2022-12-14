@@ -14,7 +14,14 @@ export const Navbar: React.FC<NavbarProperties> = ({
   justifyContent = tw`justify-center`,
   alignItems = tw`items-center`
 }) => (
-  <nav css={{ ...gap, ...justifyContent, ...alignItems, ...tw`flex w-full h-16 pt-4 px-4` }}>
+  <nav
+    css={{
+      ...gap,
+      ...justifyContent,
+      ...alignItems,
+      ...tw`fixed top-0 left-0 flex w-full h-20 p-4 backdrop-blur-sm`
+    }}
+  >
     {children}
   </nav>
 )

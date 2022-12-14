@@ -36,7 +36,7 @@ export const TopicCard: React.FC<TopicCardProperties> = ({
         }}
         onClick={onClick}
       >
-        {topic}
+        <h1>{topic}</h1>
       </div>
     </div>
   )

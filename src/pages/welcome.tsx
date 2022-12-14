@@ -15,7 +15,7 @@ export const WelcomePage: React.FC = () => (
         icon="mdi:login"
         label="ログイン"
         onClick={() => AppUser.login().then((user) => user && appUserStore.set(new AppUser(user)))}
-        backgroundColor={tw`bg-blue-300 hover:bg-blue-400 active:bg-blue-500`}
+        backgroundColor={tw`bg-lime-500 hover:bg-lime-600 active:bg-lime-700`}
         shadow={tw`shadow shadow-blue-300`}
         alwaysVisibleLabel
       />
