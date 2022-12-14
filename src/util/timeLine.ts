@@ -1,11 +1,12 @@
 import { db } from "../firebase";
-import { getDoc, doc, collection, setDoc, getDocs } from "firebase/firestore";
+import { getDoc, doc, collection, setDoc, getDocs, DocumentData } from "firebase/firestore";
 import { auth } from "../firebase";
 import { unitpost } from "./post";
 
 export class timeLine {
   topicName: string = "";
   numPosts: number = 0;
+  postsId: string[] = [];
   #uid = auth.currentUser?.uid;
   constructor(topicName: string, numPosts: number) {
     this.topicName = topicName;
@@ -44,6 +45,31 @@ export class timeLine {
     }
   }
 
+  async getPosts() {
+    const docRef = this.getDocRef();
+    if (docRef === undefined) return;
+    const nonNullable = <T>(item: T | undefined): item is T => item !== null;
+    const datas = this.postsId.map(async (postId) => {
+      const colRef = collection(docRef, postId);
+      const docs = (await getDocs(colRef)).docs;
+      let data: DocumentData | null = null;
+      for (let i = docs.length - 1; i >= 0; i--) {
+        if (docs[i].data()) {
+          data = docs[i].data();
+          break;
+        }
+      }
+      if (data !== null) {
+        return new unitpost(false, data.memo, data.weather, data.placeName, { lat: data.lat, lng: data.lng }, data.unitid, data.postid);
+      }
+      else {
+        return;
+      }
+    });
+    const posts = (await Promise.all(datas)).filter(nonNullable);
+    return posts;
+  }
+
   async post(post: unitpost, isReWirte: boolean = false) {
     const docRef = this.getDocRef();
     if (docRef === undefined) return;
@@ -57,5 +83,11 @@ export class timeLine {
       const postRef = doc(colRef, unitid.toString());
       setDoc(postRef, post.toJson());
     }
+    this.postsId.push(post.postid?.toString() ?? this.numPosts.toString());
+  }
+
+  async deletePost(postid: number) {
+    this.postsId = this.postsId.filter((id) => id !== postid.toString());
+    this.saveInfo();
   }
 }
