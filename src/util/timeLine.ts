@@ -17,13 +17,17 @@ export class timeLine {
     return doc(db, this.#uid!, "topics", this.topicName, "timeLine");
   }
 
+  toJson() {
+    return {
+      "topicName": this.topicName,
+      "numPosts": this.numPosts,
+    }
+  }
+
   async saveInfo() {
     const docRef = this.getDocRef();
     if (docRef === undefined) return;
-    setDoc(docRef, {
-      topicName: this.topicName,
-      numPosts: this.numPosts,
-    })
+    setDoc(docRef, this.toJson());
   }
 
   static async getTimeLine(topicName: string) {

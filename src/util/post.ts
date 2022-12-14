@@ -31,13 +31,13 @@ export class unitpost {
 
   toJson() {
     return {
-      isInspiration: this.isInspiration,
-      memo: this.memo,
-      weather: this.weather,
-      placeName: this.placeName,
-      place: [this.place.lat, this.place.lng],
-      unitid: this.unitid,
-      postid: this.postid,
+      "isInspiration": this.isInspiration,
+      "memo": this.memo,
+      "weather": this.weather,
+      "placeName": this.placeName,
+      "place": [this.place.lat, this.place.lng],
+      "unitid": this.unitid,
+      "postid": this.postid,
     };
   }
 }

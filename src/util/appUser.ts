@@ -35,10 +35,10 @@ export class AppUser {
 
   toJson() {
     return {
-      uid: this.uid,
-      name: this.name,
-      email: this.email,
-      topics: this.topics
+      "uid": this.uid,
+      "name": this.name,
+      "email": this.email,
+      "topics": this.topics
     }
   }
 
