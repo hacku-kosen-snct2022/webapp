@@ -1,11 +1,7 @@
-import { db } from "../firebase";
-import { getDoc, doc } from "firebase/firestore";
-import { auth } from "../firebase";
-
 export class unitpost {
   isInspiration: boolean = false;
   memo: string = "";
-  weather: "sunny" | "cloudy" | "rainy" | "snowy" = "sunny";
+  weather: "sunny" | "cloudy" | "rainy" | "snowy" | null = null;
   placeName: string | null = null;
   place: { lat: number; lng: number } | null = null;
   unitid: number | null = null;
@@ -14,7 +10,7 @@ export class unitpost {
   constructor(
     isInspiration: boolean = false,
     memo: string,
-    weather: "sunny" | "cloudy" | "rainy" | "snowy" = "sunny",
+    weather: "sunny" | "cloudy" | "rainy" | "snowy" | null = null,
     placeName: string | null = null,
     place: { lat: number; lng: number } | null = null,
     unitid: number | null = null,
@@ -27,6 +23,18 @@ export class unitpost {
     this.place = place;
     this.unitid = unitid;
     this.postid = postid;
+  }
+
+  copy() {
+    return new unitpost(
+      this.isInspiration,
+      this.memo,
+      this.weather,
+      this.placeName,
+      this.place,
+      this.unitid,
+      this.postid
+    );
   }
 
   async setPlace() {
