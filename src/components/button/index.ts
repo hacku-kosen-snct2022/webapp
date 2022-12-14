@@ -5,7 +5,7 @@ export type BaseButtonProperties = {
   color?: TwStyle,
   backgroundColor?: TwStyle,
   shadow?: TwStyle,
-  onClick?: () => void
+  onClick?: () => void | Promise<void>
 }
 
 export * from './text-button'
