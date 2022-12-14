@@ -23,6 +23,20 @@ export class AppUser {
     return this.dbRef ?? collection(db, this.uid);
   }
 
+  toJson() {
+    return {
+      uid: this.uid,
+      name: this.name,
+      email: this.email,
+      topics: this.topics
+    }
+  }
+
+  async saveUserData() {
+    const docRef = doc(this.getCollectionRef(), "userData");
+    await setDoc(docRef, this.toJson());
+  }
+
   static async login() {
     const provider = new GoogleAuthProvider();
     const userCredential = await signInWithPopup(auth, provider);
@@ -38,6 +52,7 @@ export class AppUser {
 
   addTopic(topicName: string) {
     this.topics.push(topicName);
+    this.saveUserData();
   }
 
   async post(topicName: string, post: unitpost, isReWirte: boolean = false) {
