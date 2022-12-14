@@ -29,6 +29,20 @@ export class unitpost {
     this.postid = postid;
   }
 
+  async setPlace() {
+    navigator.geolocation.getCurrentPosition((position) => {
+      this.place.lat = position.coords.latitude;
+      this.place.lng = position.coords.longitude;
+    });
+
+    const url = `	http://geoapi.heartrails.com/api/json?method=searchByGeoLocation&x=${this.place.lng}&y=${this.place.lat}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    const pre = data.response.location[0].prefecture;
+    const city = data.response.location[0].city;
+    this.placeName = pre + city;
+  }
+
   toJson() {
     return {
       "isInspiration": this.isInspiration,
