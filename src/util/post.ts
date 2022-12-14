@@ -6,8 +6,8 @@ export class unitpost {
   isInspiration: boolean = false;
   memo: string = "";
   weather: "sunny" | "cloudy" | "rainy" | "snowy" = "sunny";
-  placeName: string = "";
-  place: { lat: number; lng: number } = { lat: 0, lng: 0 };
+  placeName: string | null = null;
+  place: { lat: number; lng: number } | null = null;
   unitid: number | null = null;
   postid: number | null = null;
 
@@ -15,8 +15,8 @@ export class unitpost {
     isInspiration: boolean = false,
     memo: string,
     weather: "sunny" | "cloudy" | "rainy" | "snowy" = "sunny",
-    placeName: string = "",
-    place: { lat: number; lng: number } = { lat: 0, lng: 0 },
+    placeName: string | null = null,
+    place: { lat: number; lng: number } | null = null,
     unitid: number | null = null,
     postid: number | null = null
   ) {
@@ -30,17 +30,15 @@ export class unitpost {
   }
 
   async setPlace() {
-    navigator.geolocation.getCurrentPosition((position) => {
-      this.place.lat = position.coords.latitude;
-      this.place.lng = position.coords.longitude;
+    navigator.geolocation.getCurrentPosition(async (position) => {
+      this.place = { lat: position.coords.latitude, lng: position.coords.longitude }
+      const url = `	http://geoapi.heartrails.com/api/json?method=searchByGeoLocation&x=${this.place!.lng}&y=${this.place!.lat}`;
+      const res = await fetch(url);
+      const data = await res.json();
+      const pre = data.response.location[0].prefecture;
+      const city = data.response.location[0].city;
+      this.placeName = pre + city;
     });
-
-    const url = `	http://geoapi.heartrails.com/api/json?method=searchByGeoLocation&x=${this.place.lng}&y=${this.place.lat}`;
-    const res = await fetch(url);
-    const data = await res.json();
-    const pre = data.response.location[0].prefecture;
-    const city = data.response.location[0].city;
-    this.placeName = pre + city;
   }
 
   toJson() {
@@ -49,7 +47,8 @@ export class unitpost {
       "memo": this.memo,
       "weather": this.weather,
       "placeName": this.placeName,
-      "place": [this.place.lat, this.place.lng],
+      "lat": this.place?.lat,
+      "lng": this.place?.lng,
       "unitid": this.unitid,
       "postid": this.postid,
     };
