@@ -12,20 +12,21 @@ export class unitpost {
   postid: number | null = null;
 
   constructor(
-    isInspiration: boolean,
+    isInspiration: boolean = false,
     memo: string,
-    weather: "sunny" | "cloudy" | "rainy" | "snowy",
-    placeName: string,
-    place: { lat: number; lng: number },
-    unitid: number | null,
-    postid: number | null
+    weather: "sunny" | "cloudy" | "rainy" | "snowy" = "sunny",
+    placeName: string = "",
+    place: { lat: number; lng: number } = { lat: 0, lng: 0 },
+    unitid: number | null = null,
+    postid: number | null = null
   ) {
     this.isInspiration = isInspiration;
     this.memo = memo;
     this.weather = weather;
     this.placeName = placeName;
     this.place = place;
-    this.unitid = postid;
+    this.unitid = unitid;
+    this.postid = postid;
   }
 
   toJson() {
