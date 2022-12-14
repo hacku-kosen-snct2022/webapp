@@ -34,7 +34,7 @@ export const App: React.FC = () => {
       </Helmet>
       <Router>
         <Route path="/" component={WelcomePage} />
-        <Route key="topics" path="/topics" component={TopicsPage} />,
+        <Route key="topics" path="/topics" component={TopicsPage} />
         <Route key="timeline" path="/timeline/:id" component={TimelinePage} />
       </Router>
       <GlobalStyles />
