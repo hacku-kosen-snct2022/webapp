@@ -60,6 +60,13 @@ export class AppUser {
     await auth.signOut();
   }
 
+  postsDateFilter(posts: unitpost[], beginDate: Date, endDate: Date) {
+    return posts.filter((post) => {
+      const postDate = new Date(post.year, post.month, post.day, post.hour, post.minute, post.second)
+      return postDate >= beginDate && postDate <= endDate;
+    });
+  }
+
   addTopic(topicName: string) {
     this.topics.push(topicName);
     this.saveUserData();
