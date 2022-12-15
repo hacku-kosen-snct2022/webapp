@@ -45,6 +45,16 @@ export class timeLine {
     }
   }
 
+  async getPostEditHistory(post: unitpost) {
+    const docRef = this.getDocRef();
+    if (docRef === undefined || post.postid === null) return [];
+    const colRef = collection(docRef, post.postid.toString());
+    const docs = (await getDocs(colRef)).docs;
+    const datas = docs.map((doc) => doc.data());
+    const posts = datas.map((data) => new unitpost(false, data.memo, data.weather, data.placeName, { lat: data.lat, lng: data.lng }, data.unitid, data.postid));
+    return posts;
+  }
+
   async getPosts() {
     const docRef = this.getDocRef();
     if (docRef === undefined) return;
