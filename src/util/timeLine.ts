@@ -45,10 +45,10 @@ export class timeLine {
     }
   }
 
-  async getPostEditHistory(post: unitpost) {
+  async getPostEditHistory(postid: string) {
     const docRef = this.getDocRef();
-    if (docRef === undefined || post.postid === null) return [];
-    const colRef = collection(docRef, post.postid.toString());
+    if (docRef === undefined) return [];
+    const colRef = collection(docRef, postid);
     const docs = (await getDocs(colRef)).docs;
     const datas = docs.map((doc) => doc.data());
     const posts = datas.map((data) => new unitpost(false, data.memo, data.weather, data.placeName, { lat: data.lat, lng: data.lng }, data.unitid, data.postid));
@@ -78,6 +78,13 @@ export class timeLine {
     });
     const posts = (await Promise.all(datas)).filter(nonNullable);
     return posts;
+  }
+
+  static postsDateFilter(posts: unitpost[], beginDate: Date, endDate: Date) {
+    return posts.filter((post) => {
+      const postDate = new Date(post.year, post.month, post.day, post.hour, post.minute, post.second)
+      return postDate >= beginDate && postDate <= endDate;
+    });
   }
 
   async post(post: unitpost, isReWirte: boolean = false) {
