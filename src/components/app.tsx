@@ -13,10 +13,11 @@ export const App: React.FC = () => {
   const appUser = useStore(appUserStore)
   const [location, setLocation] = useLocation()
 
+  // eslint-disable-next-line consistent-return
   useEffect(() => {
     if (appUser && location === '/') setLocation('/topics')
     else if (!appUser) {
-      getAuth().onAuthStateChanged((user) => {
+      return getAuth().onAuthStateChanged((user) => {
         if (user) {
           appUserStore.set(new AppUser(user))
           if (location === '/') setLocation('/topics')

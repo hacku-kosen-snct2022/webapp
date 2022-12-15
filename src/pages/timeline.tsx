@@ -1,10 +1,11 @@
-import React, { useState } from 'react'
+import React, { createRef, useState } from 'react'
 import tw from 'twin.macro'
 import { useLocation } from 'wouter'
 import {
   IconButton,
   Layout,
   Main,
+  MultilineText,
   Navbar,
   SimpleCard,
   Spacer,
@@ -19,6 +20,7 @@ const posts = ['記録1', '記録2', '記録3']
 export const TimelinePage: React.FC = () => {
   const [isPostMenuOpen, setIsPostMenuOpen] = useState(false)
   const [isFilterMenuOpen, setIsFilterMenuOpen] = useState(false)
+  const textareaReference = createRef<HTMLTextAreaElement>()
   const [, setLocation] = useLocation()
 
   return (
@@ -61,16 +63,31 @@ export const TimelinePage: React.FC = () => {
           customStyles={{ ...(isPostMenuOpen ? tw`h-auto py-4` : tw`h-0 py-0`), ...tw`w-full px-4 overflow-hidden` }}
         >
           <h1>記録</h1>
+          <span>記録を入力してください</span>
+          <MultilineText ref={textareaReference} placeholder="メモ" />
           <div css={tw`flex w-full justify-end items-center gap-4`}>
             <TextButton
               label="記録"
               backgroundColor={tw`bg-lime-500 hover:bg-lime-600 active:bg-lime-700`}
-              onClick={() => setIsPostMenuOpen(false)}
+              onClick={() => {
+                if (textareaReference.current && textareaReference.current.value.length > 0) {
+                  // eslint-disable-next-line no-console
+                  console.log(textareaReference.current.value)
+                  textareaReference.current.value = ''
+                  setIsPostMenuOpen(false)
+                }
+              }}
             />
             <TextButton
               label="キャンセル"
               backgroundColor={tw`bg-rose-500 hover:bg-rose-600 active:bg-rose-700`}
-              onClick={() => setIsPostMenuOpen(false)}
+              onClick={() => {
+                if (textareaReference.current) {
+                  // eslint-disable-next-line no-console
+                  textareaReference.current.value = ''
+                }
+                setIsPostMenuOpen(false)
+              }}
             />
           </div>
         </SimpleCard>
