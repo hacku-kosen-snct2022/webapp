@@ -32,7 +32,7 @@ export const TopicCard: React.FC<TopicCardProperties> = ({
           ...(topic ? backgroundColor : tw`bg-transparent`),
           ...rounded,
           ...(topic ? shadow : tw`shadow-none`),
-          ...tw`flex h-full justify-center items-center gap-4 aspect-[2/3] cursor-pointer duration-300`
+          ...tw`flex h-full justify-center items-center gap-4 aspect-[9/16] cursor-pointer duration-300`
         }}
         onClick={onClick}
       >

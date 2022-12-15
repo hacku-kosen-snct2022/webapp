@@ -1,6 +1,6 @@
-import { Icon } from '@iconify/react'
+import { Icon, InlineIcon } from '@iconify/react'
 import { useStore } from '@nanostores/preact'
-import React, { useState } from 'react'
+import React, { createRef, useState } from 'react'
 import tw from 'twin.macro'
 import { useLocation } from 'wouter'
 import {
@@ -11,6 +11,7 @@ import {
   Main,
   Navbar,
   SimpleCard,
+  SinglelineText,
   Spacer,
   TextButton,
   TopicCard
@@ -24,6 +25,7 @@ export const TopicsPage: React.FC = () => {
   const [currentTopic, setCurrentTopic] = useState(topics[0])
   const [isCreateTopicDialogOpen, setIsCreateTopicDialogOpen] = useState(false)
   const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false)
+  const inputReference = createRef<HTMLInputElement>()
   const [, setLocation] = useLocation()
   const appUser = useStore(appUserStore)
 
@@ -66,53 +68,71 @@ export const TopicsPage: React.FC = () => {
                   onClick={() => setIsCreateTopicDialogOpen(true)}
                 >
                   <Icon icon="mdi:book-plus" width="20%" />
-                  <h1>追加</h1>
+                  <h1 tw="text-center">トピックの作成</h1>
                 </SimpleCard>
               )
           }
         </Carousel>
+        <h2 tw="flex items-center justify-center gap-2 text-gray-500">
+          <InlineIcon icon="mdi:gesture-tap" fontSize={'2.0rem'} />スクロールしてみましょう
+        </h2>
         {
           currentTopic
             ? <IconButton
               icon="mdi:edit"
               label="開く"
               onClick={() => setLocation(`/timeline/${currentTopic}`)}
+              customStyles={tw`visible md:invisible`}
               alwaysVisibleLabel
             />
             : <IconButton
               icon="mdi:book-plus"
               label="作成"
               onClick={() => setIsCreateTopicDialogOpen(true)}
+              customStyles={tw`visible md:invisible`}
               alwaysVisibleLabel
             />
         }
       </Main>
       <Dialog open={isCreateTopicDialogOpen}>
         <SimpleCard
-          backgroundColor={tw`bg-white`}
           padding={tw`p-6`}
           direction={tw`flex-col`}
           alignItems={tw`items-start`}
         >
           <h1>トピックの作成</h1>
+          <span>トピック名を入力してください</span>
+          <SinglelineText ref={inputReference} placeholder="トピック名" />
           <div tw="flex w-full justify-end items-center gap-4">
             <TextButton
               label="作成"
               backgroundColor={tw`bg-lime-500 hover:bg-lime-600 active:bg-lime-700`}
               // eslint-disable-next-line unicorn/no-null
-              onClick={() => setIsCreateTopicDialogOpen(false)}
+              onClick={() => {
+                if (inputReference.current && inputReference.current.value.length > 0) {
+                  // eslint-disable-next-line no-console
+                  console.log(inputReference.current.value)
+                  inputReference.current.value = ''
+                  setIsCreateTopicDialogOpen(false)
+                }
+              }}
             />
             <TextButton
               label="キャンセル"
               backgroundColor={tw`bg-rose-500 hover:bg-rose-600 active:bg-rose-700`}
-              onClick={() => setIsCreateTopicDialogOpen(false)}
+              onClick={() => {
+                if (inputReference.current) {
+                  // eslint-disable-next-line no-console
+                  inputReference.current.value = ''
+                }
+                setIsCreateTopicDialogOpen(false)
+              }}
             />
           </div>
         </SimpleCard>
       </Dialog>
       <Dialog open={isLogoutDialogOpen}>
         <SimpleCard
-          backgroundColor={tw`bg-white`}
           padding={tw`p-6`}
           direction={tw`flex-col`}
           alignItems={tw`items-start`}

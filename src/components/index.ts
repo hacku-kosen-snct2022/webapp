@@ -1,5 +1,6 @@
 export * from './app'
 export * from './button'
 export * from './card'
+export * from './input'
 export * from './navigation'
 export * from './utils'
