@@ -57,7 +57,19 @@ export class timeLine {
     const colRef = collection(docRef, postid);
     const docs = (await getDocs(colRef)).docs;
     const datas = docs.map((doc) => doc.data());
-    const posts = datas.map((data) => new unitpost(false, data.memo, data.weather, data.placeName, { lat: data.lat, lng: data.lng }, data.unitid, data.postid));
+    const posts = datas.map((data) => new unitpost(false, data.memo, {
+      weather: data.weather,
+      placeName: data.placeName,
+      place: data.place,
+      unitid: data.unitid,
+      postid: data.postid,
+      year: data.year,
+      month: data.month,
+      day: data.day,
+      hour: data.hour,
+      minute: data.minute,
+      second: data.second
+    }));
     return posts;
   }
 
@@ -76,7 +88,19 @@ export class timeLine {
         }
       }
       if (data !== null) {
-        return new unitpost(false, data.memo, data.weather, data.placeName, { lat: data.lat, lng: data.lng }, data.unitid, data.postid);
+        return new unitpost(false, data.memo, {
+          weather: data.weather,
+          placeName: data.placeName,
+          place: data.place,
+          unitid: data.unitid,
+          postid: data.postid,
+          year: data.year,
+          month: data.month,
+          day: data.day,
+          hour: data.hour,
+          minute: data.minute,
+          second: data.second
+        });
       }
       else {
         return;

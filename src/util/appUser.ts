@@ -26,7 +26,7 @@ export class AppUser {
           this.topics = data.topics;
         }
       }
-    })
+    })()
   }
 
   getCollectionRef() {

@@ -16,44 +16,50 @@ export class unitpost {
   constructor(
     isInspiration: boolean = false,
     memo: string,
-    weather: "sunny" | "cloudy" | "rainy" | "snowy" | null = null,
-    placeName: string | null = null,
-    place: { lat: number; lng: number } | null = null,
-    unitid: number | null = null,
-    postid: number | null = null,
-    year: number | null = null,
-    month: number | null = null,
-    day: number | null = null,
-    hour: number | null = null,
-    minute: number | null = null,
-    second: number | null = null
+    options: {
+      weather: "sunny" | "cloudy" | "rainy" | "snowy" | null,
+      placeName: string | null,
+      place: { lat: number; lng: number } | null,
+      unitid: number | null,
+      postid: number | null,
+      year: number | null,
+      month: number | null,
+      day: number | null,
+      hour: number | null,
+      minute: number | null,
+      second: number | null
+    } = { weather: null, placeName: null, place: null, unitid: null, postid: null, year: null, month: null, day: null, hour: null, minute: null, second: null }
   ) {
     this.isInspiration = isInspiration;
     this.memo = memo;
-    this.weather = weather;
-    this.placeName = placeName;
-    this.place = place;
-    this.unitid = unitid;
-    this.postid = postid;
+    this.weather = options.weather;
+    this.placeName = options.placeName;
+    this.place = options.place;
+    this.unitid = options.unitid;
+    this.postid = options.postid;
     const date = new Date();
-    this.year = year ?? date.getFullYear();
-    this.month = month ?? date.getMonth() + 1;
-    this.day = day ?? date.getDate();
-    this.hour = hour ?? date.getHours();
-    this.minute = minute ?? date.getMinutes();
-    this.second = second ?? date.getSeconds();
+    this.year = options.year ?? date.getFullYear();
+    this.month = options.month ?? date.getMonth() + 1;
+    this.day = options.day ?? date.getDate();
+    this.hour = options.hour ?? date.getHours();
+    this.minute = options.minute ?? date.getMinutes();
+    this.second = options.second ?? date.getSeconds();
   }
 
   copy() {
-    return new unitpost(
-      this.isInspiration,
-      this.memo,
-      this.weather,
-      this.placeName,
-      this.place,
-      this.unitid,
-      this.postid
-    );
+    return new unitpost(this.isInspiration, this.memo, {
+      weather: this.weather,
+      placeName: this.placeName,
+      place: this.place,
+      unitid: this.unitid,
+      postid: this.postid,
+      year: this.year,
+      month: this.month,
+      day: this.day,
+      hour: this.hour,
+      minute: this.minute,
+      second: this.second
+    });
   }
 
   async setPlace() {
