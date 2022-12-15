@@ -121,6 +121,14 @@ export class timeLine {
     await this.saveInfo();
   }
 
+  async getImageUrls() {
+    const docRef = doc(db, this.#uid!, "topics", this.topicName, "analytics");
+    const docSnap = await getDoc(docRef);
+    const data = docSnap.data();
+    if (data === undefined) return null;
+    return { "wordcloud": data.wordcloudUrl as string, "networkUrl": data.networkUrl as string }
+  }
+
   rewriteFlag() {
     this.reWrite = (new Date()).toLocaleTimeString();
     this.saveInfo();
