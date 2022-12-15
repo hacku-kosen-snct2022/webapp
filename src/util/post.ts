@@ -6,6 +6,12 @@ export class unitpost {
   place: { lat: number; lng: number } | null = null;
   unitid: number | null = null;
   postid: number | null = null;
+  year: number
+  month: number
+  day: number
+  hour: number
+  minute: number
+  second: number
 
   constructor(
     isInspiration: boolean = false,
@@ -14,7 +20,13 @@ export class unitpost {
     placeName: string | null = null,
     place: { lat: number; lng: number } | null = null,
     unitid: number | null = null,
-    postid: number | null = null
+    postid: number | null = null,
+    year: number | null = null,
+    month: number | null = null,
+    day: number | null = null,
+    hour: number | null = null,
+    minute: number | null = null,
+    second: number | null = null
   ) {
     this.isInspiration = isInspiration;
     this.memo = memo;
@@ -23,6 +35,13 @@ export class unitpost {
     this.place = place;
     this.unitid = unitid;
     this.postid = postid;
+    const date = new Date();
+    this.year = year ?? date.getFullYear();
+    this.month = month ?? date.getMonth() + 1;
+    this.day = day ?? date.getDate();
+    this.hour = hour ?? date.getHours();
+    this.minute = minute ?? date.getMinutes();
+    this.second = second ?? date.getSeconds();
   }
 
   copy() {
@@ -59,6 +78,12 @@ export class unitpost {
       "lng": this.place?.lng,
       "unitid": this.unitid,
       "postid": this.postid,
+      "year": this.year,
+      "month": this.month,
+      "day": this.day,
+      "hour": this.hour,
+      "minute": this.minute,
+      "second": this.second
     };
   }
 }
