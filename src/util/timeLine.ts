@@ -7,6 +7,7 @@ export class timeLine {
   topicName: string = "";
   numPosts: number = 0;
   postsId: string[] = [];
+  reWrite: string = "";
   #uid = auth.currentUser?.uid;
   constructor(topicName: string, numPosts: number) {
     this.topicName = topicName;
@@ -22,6 +23,8 @@ export class timeLine {
     return {
       "topicName": this.topicName,
       "numPosts": this.numPosts,
+      "postsId": this.postsId,
+      "reWrite": this.reWrite
     }
   }
 
@@ -39,7 +42,10 @@ export class timeLine {
     if (docSnap.exists()) {
       const data = docSnap.data();
       if (data === undefined) return;
-      return new timeLine(data.topicName, data.numPosts);
+      const tl = new timeLine(data.topicName, data.numPosts);
+      tl.postsId = data.postsId;
+      tl.reWrite = data.reWrite;
+      return tl;
     } else {
       return;
     }
@@ -101,6 +107,8 @@ export class timeLine {
     if (isReWirte) {
       const colRef = doc(docRef, (post.postid ?? this.numPosts).toString(), (post.unitid ?? 0).toString());
       setDoc(colRef, post.toJson());
+      this.rewriteFlag();
+      return;
     } else {
       const colRef = collection(docRef, this.numPosts.toString());
       const docs = await getDocs(colRef);
@@ -109,6 +117,13 @@ export class timeLine {
       setDoc(postRef, post.toJson());
     }
     this.postsId.push(post.postid?.toString() ?? this.numPosts.toString());
+    this.numPosts++;
+    await this.saveInfo();
+  }
+
+  rewriteFlag() {
+    this.reWrite = (new Date()).toLocaleTimeString();
+    this.saveInfo();
   }
 
   async deletePost(postid: number) {
