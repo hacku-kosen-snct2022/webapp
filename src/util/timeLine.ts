@@ -80,11 +80,19 @@ export class timeLine {
     return posts;
   }
 
-  static postsDateFilter(posts: unitpost[], beginDate: Date, endDate: Date) {
-    return posts.filter((post) => {
-      const postDate = new Date(post.year, post.month, post.day, post.hour, post.minute, post.second)
-      return postDate >= beginDate && postDate <= endDate;
-    });
+  static postsFilter(posts: unitpost[], date: { beginDate: Date, endDate: Date } | null = null, isInspiration: boolean | null = null) {
+    if (date === null && isInspiration === null) return posts;
+    let filtered: unitpost[] = [];
+    if (date !== null) {
+      filtered = posts.filter((post) => {
+        const postDate = new Date(post.year, post.month, post.day, post.hour, post.minute, post.second)
+        return postDate >= date.beginDate && postDate <= date.endDate;
+      });
+    }
+    if (isInspiration !== null) {
+      filtered = posts.filter((post) => post.isInspiration === isInspiration);
+    }
+    return filtered;
   }
 
   async post(post: unitpost, isReWirte: boolean = false) {
