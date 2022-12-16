@@ -73,7 +73,7 @@ export const TopicsPage: React.FC = () => {
               )
           }
         </Carousel>
-        <h2 tw="flex items-center justify-center gap-2 text-gray-500">
+        <h2 tw="flex items-center justify-center gap-2 text-neutral-600">
           <InlineIcon icon="mdi:gesture-tap" fontSize={'2.0rem'} />スクロールしてみましょう
         </h2>
         {

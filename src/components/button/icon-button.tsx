@@ -7,6 +7,7 @@ type IconButtonProperties = BaseButtonProperties
   & {
     icon: string,
     iconSize?: string | number,
+    loading?: boolean,
     customStyles?: TwStyle
   } & ({
     label?: never,
@@ -28,6 +29,7 @@ type IconButtonProperties = BaseButtonProperties
 export const IconButton: React.FC<IconButtonProperties> = ({
   icon,
   iconSize = '1.5rem',
+  loading,
   color = tw`text-black`,
   padding = tw`p-4`,
   backgroundColor = tw`bg-neutral-300 hover:bg-neutral-400 active:bg-neutral-500 disabled:bg-neutral-200`,
@@ -47,14 +49,13 @@ export const IconButton: React.FC<IconButtonProperties> = ({
       ...(label && labelSize),
       ...(!label && width),
       ...height,
-      ...(!label && tw`aspect-square`),
+      ...((label && alwaysVisibleLabel) ? tw`aspect-auto` : tw`aspect-square sm:aspect-auto`),
       ...padding,
       ...backgroundColor,
       ...shadow,
       ...color,
-      ...customStyles,
-      ...tw`flex justify-center items-center gap-2 rounded-xl
-            aspect-square sm:aspect-auto duration-300 whitespace-nowrap`
+      ...tw`flex justify-center items-center gap-2 rounded-xl duration-300 whitespace-nowrap`,
+      ...customStyles
     }}
     onClick={onClick}
     disabled={disabled}
@@ -63,7 +64,12 @@ export const IconButton: React.FC<IconButtonProperties> = ({
       (label && labelPosition === 'left') &&
       <span css={{ ...(!alwaysVisibleLabel && tw`hidden sm:inline-block`) }}>{label}</span>
     }
-    <Icon icon={icon} fontSize={iconSize} style={{ flexGrow: 0, flexShrink: 0 }} />
+    <Icon
+      icon={icon}
+      fontSize={iconSize}
+      style={{ flexGrow: 0, flexShrink: 0 }}
+      css={{ ...(loading && tw`animate-spin`) }}
+    />
     {
       (label && labelPosition === 'right') &&
       <span css={{ ...(!alwaysVisibleLabel && tw`hidden sm:inline-block`) }}>{label}</span>
