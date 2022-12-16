@@ -6,20 +6,20 @@ import { unitpost } from './post'
 import { timeLine } from './timeLine'
 export class AppUser {
   user?: User
-  uid = ''
+  static uid = ''
   name = ''
   email = ''
   topics: string[] = []
-  dbRef: CollectionReference<DocumentData> | null = null
+  static dbRef: CollectionReference<DocumentData> | null = null
   constructor(user: User) {
-    this.uid = user.uid
+    AppUser.uid = user.uid
     this.name = user.displayName!
     this.email = user.email!
-    this.dbRef = collection(database, this.uid)
+    AppUser.dbRef = collection(database, AppUser.uid)
   }
 
   async init() {
-    const documentReference = doc(this.getCollectionRef(), 'userData')
+    const documentReference = doc(AppUser.getCollectionRef(), 'userData')
     const documentSnap = await getDoc(documentReference)
     if (documentSnap.exists()) {
       const data = documentSnap.data()
@@ -29,8 +29,8 @@ export class AppUser {
     }
   }
 
-  getCollectionRef() {
-    return this.dbRef ?? collection(database, this.uid)
+  static getCollectionRef() {
+    return (AppUser.dbRef ??= collection(database, AppUser.uid))
   }
 
   toJson() {
@@ -38,12 +38,12 @@ export class AppUser {
       email: this.email,
       name: this.name,
       topics: this.topics,
-      uid: this.uid
+      uid: AppUser.uid
     }
   }
 
   async saveUserData() {
-    const documentReference = doc(this.getCollectionRef(), 'userData')
+    const documentReference = doc(AppUser.getCollectionRef(), 'userData')
     await setDoc(documentReference, this.toJson())
   }
 
@@ -62,7 +62,7 @@ export class AppUser {
 
   async addTopic(topicName: string) {
     this.topics.push(topicName)
-    const process1 = setDoc(doc(this.getCollectionRef(), "topics", topicName, "timeLine"), { "topicName": topicName });
+    const process1 = setDoc(doc(AppUser.getCollectionRef(), "topics", topicName, "timeLine"), { "topicName": topicName });
     const process2 = this.saveUserData()
     await Promise.all([process1, process2])
   }
