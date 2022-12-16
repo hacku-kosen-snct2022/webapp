@@ -1,23 +1,16 @@
 /* eslint-disable max-lines,unicorn/no-null */
 
-import React, { createRef, useState } from 'react'
+import { Icon } from '@iconify/react'
+import { useStore } from '@nanostores/preact'
+import React, { createRef, useEffect, useState } from 'react'
 import tw from 'twin.macro'
 import { useLocation } from 'wouter'
 import {
   Dialog, IconButton, Layout, Main, MultilineText, Navbar, SimpleCard,
-  SinglelineText, Spacer, TextButton, Timeline, TimelineCard
+  SinglelineText, Spacer, Spinner, TextButton, Timeline, TimelineCard
 } from '../components'
-import { useForceUpdate } from '../hooks'
-import { convertWeather, unitpost as UnitPost } from '../util'
-
-const posts = [
-  new UnitPost(false, 'うんこ1'),
-  new UnitPost(true, 'うんこ2'),
-  new UnitPost(false, 'うんこ'),
-  new UnitPost(false, 'うんこ'),
-  new UnitPost(false, 'うんこ'),
-  new UnitPost(false, 'うんこ')
-]
+import { appUserStore } from '../store'
+import { convertWeather, timeLine, unitpost as UnitPost } from '../util'
 
 // eslint-disable-next-line max-lines-per-function,max-statements
 export const TimelinePage: React.FC = () => {
@@ -32,9 +25,23 @@ export const TimelinePage: React.FC = () => {
   const [filterBeginDate, setFilterBeginDate] = useState<Date | null>(null)
   const [filterEndDate, setFilterEndDate] = useState<Date | null>(null)
   const [unitPost, setUnitPost] = useState<UnitPost>(new UnitPost(false, ''))
-  const forceUpdate = useForceUpdate()
   const textareaReference = createRef<HTMLTextAreaElement>()
-  const [, setLocation] = useLocation()
+  const [location, setLocation] = useLocation()
+  const topicName = location.slice(Math.max(0, location.lastIndexOf('/') + 1))
+  const [posts, setPosts] = useState<UnitPost[]>([])
+  const [isTimelineLoading, setIsTimelineLoading] = useState(true)
+  const appUser = useStore(appUserStore)
+
+  useEffect(() => {
+    // eslint-disable-next-line no-void
+    void timeLine.getTimeLine(topicName).then(async (value) => {
+      if (value) {
+        const fetchedPosts = await value.getPosts()
+        if (fetchedPosts) setPosts(fetchedPosts)
+      }
+      setIsTimelineLoading(false)
+    })
+  }, [appUser])
 
   return (
     <Layout title="タイムライン" direction={tw`flex-col`} justifyContent={tw`justify-start`}>
@@ -42,14 +49,25 @@ export const TimelinePage: React.FC = () => {
         <IconButton icon="mdi:chevron-left" label="戻る" onClick={() => setLocation('/topics')} />
         <Spacer />
         <IconButton
-          icon="mdi:pencil"
-          label="記録"
+          icon="mdi:lightbulb"
+          label="ひらめき"
+          backgroundColor={tw`bg-amber-500 hover:bg-amber-600 active:bg-amber-700`}
           onClick={() => {
-            if (isPostMenuOpen) {
-              setIsInspiration(false)
-              setUnitPost(new UnitPost(false, ''))
-              setIsPostMenuOpen(false)
-            } else {
+            setIsInspiration(true)
+            if (!isPostMenuOpen) {
+              setIsPostMenuOpen(true)
+              setIsFilterMenuOpen(false)
+              window.scrollTo({ behavior: 'smooth', top: 0 })
+            }
+          }}
+        />
+        <IconButton
+          icon="mdi:note"
+          label="メモ"
+          backgroundColor={tw`bg-neutral-400 hover:bg-neutral-500 active:bg-neutral-600`}
+          onClick={() => {
+            setIsInspiration(false)
+            if (!isPostMenuOpen) {
               setIsPostMenuOpen(true)
               setIsFilterMenuOpen(false)
               window.scrollTo({ behavior: 'smooth', top: 0 })
@@ -86,20 +104,9 @@ export const TimelinePage: React.FC = () => {
           alignItems={tw`items-start`}
           customStyles={{ ...(isPostMenuOpen ? tw`h-auto py-4` : tw`h-0 py-0`), ...tw`w-full px-4 overflow-hidden` }}
         >
-          <h1>記録</h1>
+          <h1>{isInspiration ? 'ひらめき' : 'メモ'}</h1>
           <MultilineText ref={textareaReference} placeholder="メモ" />
           <div tw="flex w-full gap-4 flex-wrap">
-            <IconButton
-              icon={isInspiration ? 'mdi:lightbulb' : 'mdi:note'}
-              label={`${isInspiration ? 'ひらめき' : 'メモ'}として記録`}
-              backgroundColor={
-                isInspiration
-                  ? tw`bg-amber-500 hover:bg-amber-600 active:bg-amber-700`
-                  : tw`bg-neutral-400 hover:bg-neutral-500 active:bg-neutral-600`
-              }
-              onClick={() => setIsInspiration(!isInspiration)}
-              alwaysVisibleLabel
-            />
             <IconButton
               icon={`mdi:weather-${unitPost.weather ?? 'sunny'}`}
               label={convertWeather(unitPost.weather) ?? '天気を設定'}
@@ -107,7 +114,6 @@ export const TimelinePage: React.FC = () => {
               onClick={() => {
                 if (unitPost.weather) {
                   unitPost.weather = null
-                  forceUpdate()
                 } else {
                   setIsWeatherDialogOpen(true)
                 }
@@ -122,11 +128,9 @@ export const TimelinePage: React.FC = () => {
                 if (unitPost?.placeName) {
                   unitPost.place = null
                   unitPost.placeName = null
-                  forceUpdate()
                 } else {
                   setIsPlaceLoading(true)
                   await unitPost.setPlace()
-                  forceUpdate()
                   setIsPlaceLoading(false)
                 }
               }}
@@ -138,12 +142,11 @@ export const TimelinePage: React.FC = () => {
             <TextButton
               label="記録"
               backgroundColor={tw`bg-lime-500 hover:bg-lime-600 active:bg-lime-700`}
-              onClick={() => {
+              onClick={async () => {
                 if (textareaReference.current && textareaReference.current.value.length > 0) {
                   unitPost.memo = textareaReference.current.value
-                  // eslint-disable-next-line no-console
-                  console.log(unitPost)
                   textareaReference.current.value = ''
+                  if (appUser) await appUser.post(topicName, unitPost)
                   setIsInspiration(false)
                   setUnitPost(new UnitPost(false, ''))
                   setIsPostMenuOpen(false)
@@ -226,17 +229,38 @@ export const TimelinePage: React.FC = () => {
             />
           </div>
         </SimpleCard>
-        <Timeline>
-          {
-            posts.map((post) => (
-              <TimelineCard
-                key={post.unitid}
-                unitPost={post}
-                onWordCloudClick={() => setSelectedUnitPost(post)}
-              />
-            ))
-          }
-        </Timeline>
+        {
+          isTimelineLoading
+            ? (
+              <div tw="flex w-full h-full items-center justify-center">
+                <Spinner />
+              </div>
+            )
+            : (
+              posts.length > 0
+                ? (
+                  <Timeline>
+                    {
+                      posts.map((post) => (
+                        <TimelineCard
+                          key={post.unitid}
+                          unitPost={post}
+                          onWordCloudClick={() => setSelectedUnitPost(post)}
+                        />
+                      ))
+                    }
+                  </Timeline>
+                )
+                : (
+                  <div tw="flex w-full h-full items-center justify-center">
+                    <SimpleCard direction={tw`flex-col`}>
+                      <Icon icon="mdi:add" fontSize="5.0rem" />
+                      <span tw="text-lg">投稿してみましょう</span>
+                    </SimpleCard>
+                  </div>
+                )
+            )
+        }
       </Main>
       <Dialog open={isWeatherDialogOpen}>
         <SimpleCard
