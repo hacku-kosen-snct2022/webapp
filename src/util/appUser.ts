@@ -1,75 +1,75 @@
-import { db } from "../firebase";
-import { getDocs, doc, collection, CollectionReference, DocumentData, setDoc, getDoc } from "firebase/firestore";
-import { auth } from "../firebase";
-import { getAuth, signInWithPopup, GoogleAuthProvider, User } from "firebase/auth";
+import { getAuth, signInWithPopup, GoogleAuthProvider, User } from 'firebase/auth'
+import { getDocs, doc, collection, CollectionReference, DocumentData, setDoc, getDoc } from 'firebase/firestore'
+import { db as database, auth } from '../firebase'
 
-import { unitpost } from "./post";
-import { timeLine } from "./timeLine";
+import { unitpost } from './post'
+import { timeLine } from './timeLine'
 export class AppUser {
-  user?: User;
-  uid = "";
-  name = "";
-  email = "";
-  topics: string[] = [];
-  dbRef: CollectionReference<DocumentData> | null = null;
-  constructor(user: User) {
-    this.uid = user.uid;
-    this.name = user.displayName!;
-    this.email = user.email!;
-    this.dbRef = collection(db, this.uid);
-    (async () => {
-      const docRef = doc(this.getCollectionRef(), "userData");
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        if (data) {
-          this.topics = data.topics;
-        }
+  user?: User
+  uid = ''
+  name = ''
+  email = ''
+  topics: string[] = []
+  dbRef: CollectionReference<DocumentData> | null = null
+  constructor (user: User) {
+    this.uid = user.uid
+    this.name = user.displayName!
+    this.email = user.email!
+    this.dbRef = collection(database, this.uid)
+  }
+
+  async init () {
+    const documentReference = doc(this.getCollectionRef(), 'userData')
+    const documentSnap = await getDoc(documentReference)
+    if (documentSnap.exists()) {
+      const data = documentSnap.data()
+      if (data) {
+        this.topics = data.topics
       }
-    })()
-  }
-
-  getCollectionRef() {
-    return this.dbRef ?? collection(db, this.uid);
-  }
-
-  toJson() {
-    return {
-      "uid": this.uid,
-      "name": this.name,
-      "email": this.email,
-      "topics": this.topics
     }
   }
 
-  async saveUserData() {
-    const docRef = doc(this.getCollectionRef(), "userData");
-    await setDoc(docRef, this.toJson());
+  getCollectionRef () {
+    return this.dbRef ?? collection(database, this.uid)
   }
 
-  static async login() {
-    const provider = new GoogleAuthProvider();
-    const userCredential = await signInWithPopup(auth, provider);
-    const credential = GoogleAuthProvider.credentialFromResult(userCredential);
-    if (!credential) return;
-    const token = credential.accessToken;
-    return userCredential.user;
+  toJson () {
+    return {
+      email: this.email,
+      name: this.name,
+      topics: this.topics,
+      uid: this.uid
+    }
   }
 
-  async logout() {
-    await auth.signOut();
+  async saveUserData () {
+    const documentReference = doc(this.getCollectionRef(), 'userData')
+    await setDoc(documentReference, this.toJson())
   }
 
-  addTopic(topicName: string) {
-    this.topics.push(topicName);
-    this.saveUserData();
+  static async login () {
+    const provider = new GoogleAuthProvider()
+    const userCredential = await signInWithPopup(auth, provider)
+    const credential = GoogleAuthProvider.credentialFromResult(userCredential)
+    if (!credential) return
+    const token = credential.accessToken
+    return userCredential.user
   }
 
-  async post(topicName: string, post: unitpost, isReWirte: boolean = false) {
-    const tl = await timeLine.getTimeLine(topicName);
-    if (tl === undefined) return;
-    await tl.post(post, isReWirte);
+  async logout () {
+    await auth.signOut()
+  }
+
+  async addTopic (topicName: string) {
+    this.topics.push(topicName)
+    await this.saveUserData()
+  }
+
+  async post (topicName: string, post: unitpost, isReWirte = false) {
+    const tl = await timeLine.getTimeLine(topicName)
+    if (tl === undefined) return
+    await tl.post(post, isReWirte)
   }
 }
 
-export default AppUser;
+export default AppUser

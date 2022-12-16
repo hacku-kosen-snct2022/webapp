@@ -6,7 +6,7 @@ import tw, { GlobalStyles } from 'twin.macro'
 import { Route, Router, useLocation } from 'wouter'
 import { auth } from '../firebase'
 import { TimelinePage, TopicsPage, WelcomePage } from '../pages'
-import { appUserStore } from '../store'
+import { appUserStore, topicsStore } from '../store'
 import { AppUser } from '../util'
 
 export const App: React.FC = () => {
@@ -19,8 +19,13 @@ export const App: React.FC = () => {
     else if (!appUser) {
       return auth.onAuthStateChanged((user) => {
         if (user) {
-          appUserStore.set(new AppUser(user))
-          if (location === '/') setLocation('/topics')
+          const newAppUser = new AppUser(user)
+          // eslint-disable-next-line no-void
+          void newAppUser.init().then(() => {
+            appUserStore.set(newAppUser)
+            topicsStore.set(newAppUser.topics)
+            if (location === '/') setLocation('/topics')
+          })
         } else {
           setLocation('/')
         }

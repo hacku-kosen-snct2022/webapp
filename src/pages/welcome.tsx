@@ -1,15 +1,21 @@
 import React from 'react'
 import tw from 'twin.macro'
+import imageUrl from '../assets/logo.png'
 import { IconButton, Layout, Main, SimpleCard } from '../components'
 import { appUserStore } from '../store'
 import { AppUser } from '../util'
 
 export const WelcomePage: React.FC = () => (
-  <Layout title="アプリ名へようこそ!" direction={tw`flex-col`}>
+  <Layout title="Worduitousへようこそ!" direction={tw`flex-col`}>
     <Main direction={tw`flex-col`}>
-      <h1>アプリ名</h1>
-      <SimpleCard>
-        <span>アプリのアイコンと概要</span>
+      <h1>Worduitous</h1>
+      <SimpleCard direction={tw`flex-col`} alignItems={tw`items-center`}>
+        <img src={imageUrl as string} alt="Worduitous" tw="w-40 h-40 my-0" />
+        <ul tw="my-0 list-disc">
+          <li>日々の「！」を逃さずメモ</li>
+          <li>積み重ねた「！」から新たな「！」を</li>
+          <li>日時や場所、天気も使って、今後に活かす</li>
+        </ul>
       </SimpleCard>
       <IconButton
         icon="mdi:login"
