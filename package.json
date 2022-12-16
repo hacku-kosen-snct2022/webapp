@@ -10,6 +10,7 @@
     "lint": "eslint './**/*.{js,jsx,ts,tsx,json,yaml,yml,toml}'",
     "lint:fix": "npm run lint --fix",
     "start": "vite",
+    "start:host": "vite --host",
     "type": "tsc --noEmit"
   },
   "dependencies": {

@@ -65,7 +65,7 @@ export const IconButton: React.FC<IconButtonProperties> = ({
       <span css={{ ...(!alwaysVisibleLabel && tw`hidden sm:inline-block`) }}>{label}</span>
     }
     <Icon
-      icon={icon}
+      icon={loading ? 'mdi:loading' : icon}
       fontSize={iconSize}
       style={{ flexGrow: 0, flexShrink: 0 }}
       css={{ ...(loading && tw`animate-spin`) }}
