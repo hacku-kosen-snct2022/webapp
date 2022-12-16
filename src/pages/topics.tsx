@@ -16,18 +16,17 @@ import {
   TextButton,
   TopicCard
 } from '../components'
-import { appUserStore } from '../store'
-
-const topics = ['トピック1', 'トピック2', 'トピック3']
+import { appUserStore, topicsStore } from '../store'
 
 // eslint-disable-next-line max-lines-per-function
 export const TopicsPage: React.FC = () => {
-  const [currentTopic, setCurrentTopic] = useState(topics[0])
+  const [currentTopic, setCurrentTopic] = useState<string | null>()
   const [isCreateTopicDialogOpen, setIsCreateTopicDialogOpen] = useState(false)
   const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false)
   const inputReference = createRef<HTMLInputElement>()
   const [, setLocation] = useLocation()
   const appUser = useStore(appUserStore)
+  const topics = useStore(topicsStore)
 
   return (
     <Layout title="トピック" direction={tw`flex-col`}>
@@ -64,7 +63,7 @@ export const TopicsPage: React.FC = () => {
                   backgroundColor={tw`bg-neutral-200 hover:bg-neutral-300 active:bg-neutral-400`}
                   direction={tw`flex-col`}
                   aspectRatio={tw`aspect-[2/3]`}
-                  customStyles={tw`snap-center`}
+                  customStyles={tw`snap-center cursor-pointer`}
                   onClick={() => setIsCreateTopicDialogOpen(true)}
                 >
                   <Icon icon="mdi:book-plus" width="20%" />
@@ -108,11 +107,13 @@ export const TopicsPage: React.FC = () => {
               label="作成"
               backgroundColor={tw`bg-lime-500 hover:bg-lime-600 active:bg-lime-700`}
               // eslint-disable-next-line unicorn/no-null
-              onClick={() => {
-                if (inputReference.current && inputReference.current.value.length > 0) {
-                  // eslint-disable-next-line no-console
-                  console.log(inputReference.current.value)
-                  inputReference.current.value = ''
+              onClick={async () => {
+                const inputElement = inputReference.current
+                if (inputElement && inputElement.value.length > 0 && appUser && !topics.includes(inputElement.value)) {
+                  const topicName = inputElement.value
+                  inputElement.value = ''
+                  await appUser.addTopic(topicName)
+                  topicsStore.set(appUser.topics)
                   setIsCreateTopicDialogOpen(false)
                 }
               }}
@@ -122,7 +123,6 @@ export const TopicsPage: React.FC = () => {
               backgroundColor={tw`bg-rose-500 hover:bg-rose-600 active:bg-rose-700`}
               onClick={() => {
                 if (inputReference.current) {
-                  // eslint-disable-next-line no-console
                   inputReference.current.value = ''
                 }
                 setIsCreateTopicDialogOpen(false)

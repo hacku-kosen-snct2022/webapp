@@ -1,4 +1,4 @@
-/* eslint-disable unicorn/no-null */
+/* eslint-disable max-lines,unicorn/no-null */
 
 import React, { createRef, useState } from 'react'
 import tw from 'twin.macro'
@@ -11,8 +11,11 @@ import { useForceUpdate } from '../hooks'
 import { convertWeather, unitpost as UnitPost } from '../util'
 
 const posts = [
+  new UnitPost(false, 'うんこ1'),
+  new UnitPost(true, 'うんこ2'),
   new UnitPost(false, 'うんこ'),
-  new UnitPost(true, 'うんこ'),
+  new UnitPost(false, 'うんこ'),
+  new UnitPost(false, 'うんこ'),
   new UnitPost(false, 'うんこ')
 ]
 
@@ -22,6 +25,7 @@ export const TimelinePage: React.FC = () => {
   const [isFilterMenuOpen, setIsFilterMenuOpen] = useState(false)
   const [isInspiration, setIsInspiration] = useState(false)
   const [isWeatherDialogOpen, setIsWeatherDialogOpen] = useState(false)
+  const [selectedUnitPost, setSelectedUnitPost] = useState<UnitPost | null>(null)
   const [isPlaceLoading, setIsPlaceLoading] = useState(false)
   const [isFilterEnabled, setIsFilterEnabled] = useState(false)
   const [filterIsInspiration, setFilterIsInspiration] = useState<boolean | null>(null)
@@ -112,7 +116,7 @@ export const TimelinePage: React.FC = () => {
             />
             <IconButton
               icon="mdi:map-marker"
-              label={unitPost.placeName ?? (isPlaceLoading ? '現在地を取得中' : '場所を設定')}
+              label={unitPost.placeName ?? (isPlaceLoading ? '現在地を取得中...' : '場所を設定')}
               backgroundColor={tw`bg-green-500 hover:bg-green-600 active:bg-green-700`}
               onClick={async () => {
                 if (unitPost?.placeName) {
@@ -209,19 +213,27 @@ export const TimelinePage: React.FC = () => {
               backgroundColor={tw`bg-lime-500 hover:bg-lime-600 active:bg-lime-700`}
               onClick={() => {
                 setIsFilterEnabled(true)
+                setIsFilterMenuOpen(false)
               }}
             />
             <TextButton
               label="キャンセル"
               backgroundColor={tw`bg-rose-500 hover:bg-rose-600 active:bg-rose-700`}
-              onClick={() => setIsFilterEnabled(false)}
+              onClick={() => {
+                setIsFilterEnabled(false)
+                setIsFilterMenuOpen(false)
+              }}
             />
           </div>
         </SimpleCard>
         <Timeline>
           {
             posts.map((post) => (
-              <TimelineCard key={post.unitid} unitPost={post} />
+              <TimelineCard
+                key={post.unitid}
+                unitPost={post}
+                onWordCloudClick={() => setSelectedUnitPost(post)}
+              />
             ))
           }
         </Timeline>
@@ -274,7 +286,6 @@ export const TimelinePage: React.FC = () => {
             />
           </div>
           <div tw="flex w-full justify-end items-center gap-4">
-
             <TextButton
               label="キャンセル"
               backgroundColor={tw`bg-rose-500 hover:bg-rose-600 active:bg-rose-700`}
@@ -285,8 +296,25 @@ export const TimelinePage: React.FC = () => {
           </div>
         </SimpleCard>
       </Dialog>
+      <Dialog open={selectedUnitPost !== null}>
+        <SimpleCard
+          padding={tw`p-6`}
+          direction={tw`flex-col`}
+          alignItems={tw`items-start`}
+          customStyles={tw`shrink`}
+        >
+          <h1>&quot;{selectedUnitPost?.memo}&quot;のワードクラウド</h1>
+          <div tw="flex w-full justify-end items-center gap-4">
+            <TextButton
+              label="キャンセル"
+              backgroundColor={tw`bg-rose-500 hover:bg-rose-600 active:bg-rose-700`}
+              onClick={() => setSelectedUnitPost(null)}
+            />
+          </div>
+        </SimpleCard>
+      </Dialog>
     </Layout>
   )
 }
 
-/* eslint-enable unicorn/no-null */
+/* eslint-enable max-lines,unicorn/no-null */
