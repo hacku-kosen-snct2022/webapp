@@ -11,14 +11,14 @@ export class AppUser {
   email = ''
   topics: string[] = []
   dbRef: CollectionReference<DocumentData> | null = null
-  constructor (user: User) {
+  constructor(user: User) {
     this.uid = user.uid
     this.name = user.displayName!
     this.email = user.email!
     this.dbRef = collection(database, this.uid)
   }
 
-  async init () {
+  async init() {
     const documentReference = doc(this.getCollectionRef(), 'userData')
     const documentSnap = await getDoc(documentReference)
     if (documentSnap.exists()) {
@@ -29,11 +29,11 @@ export class AppUser {
     }
   }
 
-  getCollectionRef () {
+  getCollectionRef() {
     return this.dbRef ?? collection(database, this.uid)
   }
 
-  toJson () {
+  toJson() {
     return {
       email: this.email,
       name: this.name,
@@ -42,12 +42,12 @@ export class AppUser {
     }
   }
 
-  async saveUserData () {
+  async saveUserData() {
     const documentReference = doc(this.getCollectionRef(), 'userData')
     await setDoc(documentReference, this.toJson())
   }
 
-  static async login () {
+  static async login() {
     const provider = new GoogleAuthProvider()
     const userCredential = await signInWithPopup(auth, provider)
     const credential = GoogleAuthProvider.credentialFromResult(userCredential)
@@ -56,16 +56,18 @@ export class AppUser {
     return userCredential.user
   }
 
-  async logout () {
+  async logout() {
     await auth.signOut()
   }
 
-  async addTopic (topicName: string) {
+  async addTopic(topicName: string) {
     this.topics.push(topicName)
-    await this.saveUserData()
+    const process1 = setDoc(doc(this.getCollectionRef(), "topics", topicName, "timeLine"), {});
+    const process2 = this.saveUserData()
+    await Promise.all([process1, process2])
   }
 
-  async post (topicName: string, post: unitpost, isReWirte = false) {
+  async post(topicName: string, post: unitpost, isReWirte = false) {
     const tl = await timeLine.getTimeLine(topicName)
     if (tl === undefined) return
     await tl.post(post, isReWirte)
