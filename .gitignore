@@ -343,7 +343,8 @@ Cargo.lock
 .LSOverride
 
 # Icon must end with two \r
-Icon
+Icon
+
 
 # Thumbnails
 ._*
@@ -514,3 +515,4 @@ doc/api/
 .flutter-plugins
 .flutter-plugins-dependencies
 
+.firebase
