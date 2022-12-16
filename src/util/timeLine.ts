@@ -2,7 +2,6 @@ import { db } from "../firebase";
 import { getDoc, doc, collection, setDoc, getDocs, DocumentData } from "firebase/firestore";
 import { auth } from "../firebase";
 import { unitpost } from "./post";
-import AppUser from "./appUser";
 
 export class timeLine {
   topicName: string = "";
@@ -17,7 +16,7 @@ export class timeLine {
 
   getDocRef() {
     if (this.#uid === null) return;
-    return doc(AppUser.getCollectionRef(), "topics", this.topicName, "timeLine");
+    return doc(db, this.#uid!, "topics", this.topicName, "timeLine");
   }
 
   toJson() {
@@ -44,8 +43,8 @@ export class timeLine {
       const data = docSnap.data();
       if (data === undefined) return;
       const tl = new timeLine(data.topicName, data.numPosts);
-      tl.postsId = data.postsId;
-      tl.reWrite = data.reWrite;
+      tl.postsId = data.postsId ?? [];
+      tl.reWrite = data.reWrite ?? "";
       return tl;
     } else {
       return;
