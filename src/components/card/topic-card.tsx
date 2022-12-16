@@ -19,7 +19,7 @@ export const TopicCard: React.FC<TopicCardProperties> = ({
   onChange
 }) => {
   // eslint-disable-next-line no-alert
-  const { ref } = useInView({ onChange, threshold: 1 })
+  const { ref, inView } = useInView({ onChange, threshold: 0.5 })
 
   return (
     <div css={{ ...tw`snap-center shrink-0 flex` }}>
@@ -27,15 +27,16 @@ export const TopicCard: React.FC<TopicCardProperties> = ({
       <div
         ref={ref}
         css={{
+          ...(inView ? tw`scale-100` : tw`scale-90`),
           ...padding,
           ...(topic ? backgroundColor : tw`bg-transparent`),
           ...rounded,
           ...(topic ? shadow : tw`shadow-none`),
-          ...tw`flex h-full justify-center items-center gap-4 aspect-[2/3] cursor-pointer`
+          ...tw`flex h-full justify-center items-center gap-4 aspect-[9/16] cursor-pointer duration-300`
         }}
         onClick={onClick}
       >
-        {topic}
+        <h1 tw="text-center">{topic}</h1>
       </div>
     </div>
   )

@@ -19,7 +19,14 @@ export const Main: React.FC<MainProperties> = ({
   customStyles
 }) => (
   <main
-    css={{ ...direction, ...justifyContent, ...alignItems, ...gap, ...tw`flex w-full h-full py-4`, ...customStyles }}
+    css={{
+      ...direction,
+      ...justifyContent,
+      ...alignItems,
+      ...gap,
+      ...customStyles,
+      ...tw`flex w-full h-full pt-20 pb-4`
+    }}
   >
     {children}
   </main>

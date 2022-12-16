@@ -25,7 +25,7 @@ export const Layout: React.FC<LayoutProperties> = ({
       ...justifyContent,
       ...alignItems,
       ...gap,
-      ...tw`w-full h-full max-w-screen-lg flex prose-sm prose-headings:m-0`
+      ...tw`w-full h-full flex prose-sm prose-headings:m-0`
     }}
   >
     {title && <Helmet title={title} />}
