@@ -10,7 +10,7 @@ const MultilineText =
   forwardRef<HTMLTextAreaElement, MultilineTextProperties>(({ placeholder, onChange }, reference) => (
     <textarea
       ref={reference}
-      css={{ ...tw`w-full h-32 min-h-fit p-4 shadow rounded-lg resize-none grow-0 shrink-0` }}
+      css={{ ...tw`w-full h-32 min-h-fit p-4 shadow rounded-lg resize-none` }}
       placeholder={placeholder}
       onChange={onChange}
     />
