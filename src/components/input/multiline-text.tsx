@@ -1,15 +1,18 @@
-import React, { forwardRef } from 'react'
+import React, { ChangeEventHandler, forwardRef } from 'react'
 import tw from 'twin.macro'
 import { BaseTextProperties } from './'
 
-type MultilineTextProperties = BaseTextProperties
+type MultilineTextProperties = BaseTextProperties & {
+  onChange?: ChangeEventHandler<HTMLTextAreaElement>
+}
 
 const MultilineText =
-  forwardRef<HTMLTextAreaElement, MultilineTextProperties>(({ placeholder }, reference) => (
+  forwardRef<HTMLTextAreaElement, MultilineTextProperties>(({ placeholder, onChange }, reference) => (
     <textarea
       ref={reference}
       css={{ ...tw`w-full h-32 min-h-fit p-4 shadow rounded-lg resize-none grow-0 shrink-0` }}
       placeholder={placeholder}
+      onChange={onChange}
     />
   ))
 

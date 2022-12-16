@@ -55,7 +55,7 @@ export const TopicsPage: React.FC = () => {
                   key={topic}
                   topic={topic}
                   backgroundColor={tw`bg-lime-500 hover:bg-lime-600 active:bg-lime-700`}
-                  onClick={() => setLocation(`/timeline/${currentTopic}`)}
+                  onClick={() => setLocation(`/timeline/${topic}`)}
                   onChange={(inView) => inView && setCurrentTopic(topic)}
                 />
               ))
@@ -74,7 +74,7 @@ export const TopicsPage: React.FC = () => {
           }
         </Carousel>
         <h2 tw="flex items-center justify-center gap-2 text-neutral-600">
-          <InlineIcon icon="mdi:gesture-tap" fontSize={'2.0rem'} />スクロールしてみましょう
+          <InlineIcon icon="mdi:gesture-tap" fontSize={'2.0rem'} />左右にスクロールできます
         </h2>
         {
           currentTopic
@@ -82,7 +82,7 @@ export const TopicsPage: React.FC = () => {
               icon="mdi:edit"
               label="開く"
               onClick={() => setLocation(`/timeline/${currentTopic}`)}
-              customStyles={tw`visible md:invisible`}
+              customStyles={tw`visible lg:invisible`}
               alwaysVisibleLabel
             />
             : <IconButton

@@ -1,7 +1,6 @@
 /* eslint-disable init-declarations */
 
 import { css as cssImport } from '@emotion/react'
-import { CSSInterpolation } from '@emotion/serialize'
 import styledImport from '@emotion/styled'
 import { TwStyle } from 'twin.macro'
 
