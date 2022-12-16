@@ -40,7 +40,7 @@ export const SimpleCard: React.FC<SimpleCardProperties> = ({
       ...justifyContent,
       ...alignItems,
       ...aspectRatio,
-      ...tw`flex gap-4 duration-300 cursor-pointer`,
+      ...tw`flex gap-4 duration-300 cursor-pointer grow-0 shrink-0`,
       ...customStyles
     }}
     onClick={onClick}

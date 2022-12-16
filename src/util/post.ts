@@ -63,15 +63,16 @@ export class unitpost {
   }
 
   async setPlace() {
-    navigator.geolocation.getCurrentPosition(async (position) => {
-      this.place = { lat: position.coords.latitude, lng: position.coords.longitude }
-      const url = `	http://geoapi.heartrails.com/api/json?method=searchByGeoLocation&x=${this.place!.lng}&y=${this.place!.lat}`;
-      const res = await fetch(url);
-      const data = await res.json();
-      const pre = data.response.location[0].prefecture;
-      const city = data.response.location[0].city;
-      this.placeName = pre + city;
-    });
+    const position = await new Promise<GeolocationPosition>((resolve, reject) => {
+      navigator.geolocation.getCurrentPosition(resolve, reject)
+    })
+    this.place = { lat: position.coords.latitude, lng: position.coords.longitude }
+    const url = `http://geoapi.heartrails.com/api/json?method=searchByGeoLocation&x=${this.place!.lng}&y=${this.place!.lat}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    const pre = data.response.location[0].prefecture;
+    const city = data.response.location[0].city;
+    this.placeName = pre + city;
   }
 
   toJson() {

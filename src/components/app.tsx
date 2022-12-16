@@ -1,10 +1,10 @@
 import { css, Global } from '@emotion/react'
 import { useStore } from '@nanostores/preact'
-import { getAuth } from 'firebase/auth'
 import React, { useEffect } from 'react'
 import { Helmet } from 'react-helmet'
 import tw, { GlobalStyles } from 'twin.macro'
 import { Route, Router, useLocation } from 'wouter'
+import { auth } from '../firebase'
 import { TimelinePage, TopicsPage, WelcomePage } from '../pages'
 import { appUserStore } from '../store'
 import { AppUser } from '../util'
@@ -17,7 +17,7 @@ export const App: React.FC = () => {
   useEffect(() => {
     if (appUser && location === '/') setLocation('/topics')
     else if (!appUser) {
-      return getAuth().onAuthStateChanged((user) => {
+      return auth.onAuthStateChanged((user) => {
         if (user) {
           appUserStore.set(new AppUser(user))
           if (location === '/') setLocation('/topics')

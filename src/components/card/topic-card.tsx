@@ -36,7 +36,7 @@ export const TopicCard: React.FC<TopicCardProperties> = ({
         }}
         onClick={onClick}
       >
-        <h1>{topic}</h1>
+        <h1 tw="text-center">{topic}</h1>
       </div>
     </div>
   )
