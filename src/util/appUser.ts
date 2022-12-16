@@ -64,8 +64,9 @@ export class AppUser {
     this.topics.push(topicName)
     const process0 = new timeLine(topicName).saveInfo()
     const process1 = setDoc(doc(AppUser.getCollectionRef(), "topics", topicName, "timeLine"), { "topicName": topicName });
+    const process1_2 = setDoc(doc(AppUser.getCollectionRef(), "topics"), { topics: this.topics });
     const process2 = this.saveUserData()
-    await Promise.all([process0, process1, process2])
+    await Promise.all([process0, process1, process1_2, process2])
   }
 
   async post(topicName: string, post: unitpost, isReWirte = false) {
