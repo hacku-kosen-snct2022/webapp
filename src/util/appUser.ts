@@ -62,7 +62,7 @@ export class AppUser {
 
   async addTopic(topicName: string) {
     this.topics.push(topicName)
-    const process1 = setDoc(doc(this.getCollectionRef(), "topics", topicName, "timeLine"), {});
+    const process1 = setDoc(doc(this.getCollectionRef(), "topics", topicName, "timeLine"), { "topicName": topicName });
     const process2 = this.saveUserData()
     await Promise.all([process1, process2])
   }
