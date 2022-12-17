@@ -9,7 +9,7 @@ export class timeLine {
   postsId: string[] = [];
   reWrite: string = "";
   #uid = auth.currentUser?.uid;
-  constructor(topicName: string, numPosts: number) {
+  constructor(topicName: string, numPosts: number = 0) {
     this.topicName = topicName;
     this.numPosts = numPosts;
   }
@@ -42,7 +42,7 @@ export class timeLine {
     if (docSnap.exists()) {
       const data = docSnap.data();
       if (data === undefined) return;
-      const tl = new timeLine(data.topicName, data.numPosts);
+      const tl = new timeLine(data.topicName, data.numPosts ?? 0);
       tl.postsId = data.postsId ?? [];
       tl.reWrite = data.reWrite ?? "";
       return tl;
