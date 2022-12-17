@@ -69,6 +69,7 @@ export class unitpost {
       mode: 'cors',
       credentials: "include",
       referrerPolicy: "strict-origin-when-cross-origin",
+      referrer: "https://hackukosen.web.app/"
     })
     const data = await res.json()
     const pre = data.response.location[0].prefecture
