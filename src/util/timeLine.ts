@@ -88,7 +88,7 @@ export class timeLine {
         }
       }
       if (data !== null) {
-        return new unitpost(false, data.memo, {
+        return new unitpost(data.isInspiration, data.memo, {
           weather: data.weather,
           placeName: data.placeName,
           place: data.place,
