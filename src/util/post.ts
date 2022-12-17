@@ -13,7 +13,7 @@ export class unitpost {
   minute: number
   second: number
 
-  constructor (
+  constructor(
     isInspiration = false,
     memo: string,
     options: {
@@ -46,7 +46,7 @@ export class unitpost {
     this.second = options.second ?? date.getSeconds()
   }
 
-  copy () {
+  copy() {
     return new unitpost(this.isInspiration, this.memo, {
       day: this.day,
       hour: this.hour,
@@ -62,10 +62,7 @@ export class unitpost {
     })
   }
 
-  async setPlace () {
-    const position = await new Promise<GeolocationPosition>((resolve, reject) => {
-      navigator.geolocation.getCurrentPosition(resolve, reject)
-    })
+  async setPlace(position: GeolocationPosition) {
     this.place = { lat: position.coords.latitude, lng: position.coords.longitude }
     const url = `http://geoapi.heartrails.com/api/json?method=searchByGeoLocation&x=${this.place.lng}&y=${this.place.lat}`
     const res = await fetch(url)
@@ -75,7 +72,7 @@ export class unitpost {
     this.placeName = pre + city
   }
 
-  toJson () {
+  toJson() {
     return {
       day: this.day,
       hour: this.hour,
