@@ -25,7 +25,7 @@ export const TimelinePage: React.FC = () => {
   const [unitPost, setUnitPost] = useState<UnitPost>(new UnitPost(false, ''))
   const textareaReference = createRef<HTMLTextAreaElement>()
   const [location, setLocation] = useLocation()
-  const topicName = location.slice(Math.max(0, location.lastIndexOf('/') + 1))
+  const topicName = decodeURI(location.slice(Math.max(0, location.lastIndexOf('/') + 1)))
   const [posts, setPosts] = useState<UnitPost[]>([])
   const [isTimelineLoading, setIsTimelineLoading] = useState(true)
   const [isImagesDialogOpen, setIsImagesDialogOpen] = useState(false)
@@ -48,13 +48,13 @@ export const TimelinePage: React.FC = () => {
   }, [appUser, topicName])
 
   useEffect(() => {
-    const docRef = doc(AppUser.getCollectionRef(), "topics", topicName, "analytics");
-    const unsubscribe = onSnapshot(docRef, (doc) => {
-      const data = doc.data();
+    const documentReference = doc(AppUser.getCollectionRef(), 'topics', topicName, 'analytics')
+    const unsubscribe = onSnapshot(documentReference, (document_) => {
+      const data = document_.data()
       if (data) {
-        setImages({ wordcloud: data.wordcloudUrl, networkUrl: data.networkGraphUrl });
+        setImages({ networkUrl: data.networkGraphUrl, wordcloud: data.wordcloudUrl })
       }
-    });
+    })
     return () => { unsubscribe() }
   }, [])
 
