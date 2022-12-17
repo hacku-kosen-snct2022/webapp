@@ -75,6 +75,7 @@ export const TimelineCard: React.FC<TimelineCardProperties> = ({
           backgroundColor={tw`bg-green-500 hover:bg-green-600 active:bg-green-700`}
           customStyles={tw`h-auto`}
           alwaysVisibleLabel
+          onClick={() => { window.open(`https://www.google.com/maps?q=${unitPost.place?.lat},${unitPost.place?.lng}`) }}
         />
       }
     </div>
