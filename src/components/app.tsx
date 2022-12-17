@@ -5,7 +5,7 @@ import { Helmet } from 'react-helmet'
 import tw, { GlobalStyles } from 'twin.macro'
 import { Route, Router, useLocation } from 'wouter'
 import { auth } from '../firebase'
-import { TimelinePage, TopicsPage, WelcomePage } from '../pages'
+import { LicensePage, TimelinePage, TopicsPage, WelcomePage } from '../pages'
 import { appUserStore, topicsStore } from '../store'
 import { AppUser } from '../util'
 
@@ -26,7 +26,7 @@ export const App: React.FC = () => {
             topicsStore.set(newAppUser.topics)
             if (location === '/') setLocation('/topics')
           })
-        } else {
+        } else if (location !== '/license') {
           setLocation('/')
         }
       })
@@ -42,6 +42,7 @@ export const App: React.FC = () => {
         <Route path="/" component={WelcomePage} />
         <Route key="topics" path="/topics" component={TopicsPage} />
         <Route key="timeline" path="/timeline/:id" component={TimelinePage} />
+        <Route key="license" path="/license" component={LicensePage} />
       </Router>
       <GlobalStyles />
       <Global styles={
