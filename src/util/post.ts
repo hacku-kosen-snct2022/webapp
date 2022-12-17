@@ -72,7 +72,8 @@ export class unitpost {
       referrer: currenturl,
       cache: "no-store",
       headers: {
-        origin: "https://hackukosen.web.app"
+        origin: "https://hackukosen.web.app",
+        withCredential: "true"
       }
     })
     const data = await res.json()
