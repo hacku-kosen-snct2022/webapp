@@ -1,4 +1,5 @@
 export type BaseTextProperties = {
+  defaultValue?: string,
   placeholder?: string
 }
 
