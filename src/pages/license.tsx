@@ -1,3 +1,4 @@
+/* eslint-disable max-lines-per-function */
 /* eslint-disable max-lines,unicorn/no-null */
 
 import { Icon } from '@iconify/react'
@@ -10,16 +11,90 @@ import {
   Dialog, IconButton, Layout, Main, MultilineText, Navbar, SimpleCard,
   SinglelineText, Spacer, Spinner, TextButton, Timeline, TimelineCard
 } from '../components'
+import { License, LicenseCard } from '../components/card/license-card'
 import { appUserStore } from '../store'
 import { AppUser, convertWeather, timeLine, unitpost as UnitPost } from '../util'
 
 // eslint-disable-next-line max-lines-per-function,max-statements,sonarjs/cognitive-complexity
+
+interface LinkProperties{
+  href: string;
+  children: React.ReactNode;
+}
+
+const Link = (properties: LinkProperties) => (
+  // eslint-disable-next-line jsx-a11y/anchor-has-content
+  <a {...properties} tw="text-blue-400 underline">{properties.children}</a>
+)
+
 export const LicensePage: React.FC = () => {
   const [, setLocation] = useLocation()
 
   const licenseList = [
-    { lib: 'React', license: 'Reactのライセンス' },
-    { lib: 'Tailwind', license: 'hoge' }
+    {
+      lib: 'MeCab',
+      license: (<span><Link href="https://www.gnu.org/licenses/gpl-3.0.txt">GPL</Link>
+        (the GNU General Public License),
+        <Link href="https://www.gnu.org/licenses/lgpl-3.0.txt">LGPL</Link>
+        (Lesser GNU General Public License), BSD</span>)
+    },
+    {
+      lib: 'Wordcloud',
+      license: (
+        <span>
+          <Link href="https://github.com/amueller/word_cloud/blob/master/LICENSE">MIT</Link>
+        </span>
+      )
+    },
+    {
+      lib: 'NetworkX',
+      license: (
+        <span>
+          <Link href="https://github.com/networkx/networkx/blob/main/LICENSE.txt">BSD</Link>
+        </span>
+      )
+    },
+    {
+      lib: 'PREACT.JS',
+      license: (
+        <span>
+          <Link href="https://github.com/preactjs/preact/blob/master/LICENSE">MIT</Link>
+        </span>
+      )
+    },
+    {
+      lib: 'React.js',
+      license: (
+        <span>
+          <Link href="https://github.com/facebook/react/blob/main/LICENSE">MIT</Link>
+        </span>
+      )
+    },
+    {
+      lib: 'tailwindcss',
+      license: (
+        <span>
+          <Link href="https://github.com/tailwindlabs/tailwindcss/blob/master/LICENSE">MIT</Link>
+        </span>
+      )
+    },
+    {
+      lib: 'iconify',
+      license: (
+        <span>
+          <Link href="https://github.com/iconify/iconify/blob/main/license.txt">MIT</Link>
+        </span>
+      )
+    },
+    {
+      License: (
+        <span>出典:<Link href="https://nlftp.mlit.go.jp/">「位置参照情報」(国土交通省)</Link>
+          の加工情報・
+          <Link href="https://geoapi.heartrails.com/">「HeartRails Geo API」(HeartRails Inc.)</Link>
+        </span>
+      ),
+      lib: ''
+    }
   ]
 
   return (
@@ -44,111 +119,8 @@ export const LicensePage: React.FC = () => {
               ))
             }
           </Timeline>
-
-        )
-
-        }
+        )}
       </Main>
-      <Dialog open={isWeatherDialogOpen}>
-        <SimpleCard
-          direction={tw`flex-col`}
-          alignItems={tw`items-start`}
-          customStyles={tw`shrink`}
-        >
-          <h1>天気</h1>
-          <span>天気を選択してください</span>
-          <div tw="flex gap-4 flex-wrap">
-            <IconButton
-              icon="mdi:weather-sunny"
-              label="晴れ"
-              onClick={() => {
-                unitPost.weather = 'sunny'
-                setIsWeatherDialogOpen(false)
-              }}
-              alwaysVisibleLabel
-            />
-            <IconButton
-              icon="mdi:weather-cloudy"
-              label="曇り"
-              onClick={() => {
-                unitPost.weather = 'cloudy'
-                setIsWeatherDialogOpen(false)
-              }}
-              alwaysVisibleLabel
-            />
-            <IconButton
-              icon="mdi:weather-rainy"
-              label="雨"
-              onClick={() => {
-                unitPost.weather = 'rainy'
-                setIsWeatherDialogOpen(false)
-              }}
-              alwaysVisibleLabel
-            />
-            <IconButton
-              icon="mdi:weather-snowy"
-              label="雪"
-              onClick={() => {
-                unitPost.weather = 'snowy'
-                setIsWeatherDialogOpen(false)
-              }}
-              alwaysVisibleLabel
-            />
-          </div>
-          <div tw="flex w-full justify-end items-center gap-4">
-            <TextButton
-              label="キャンセル"
-              backgroundColor={tw`bg-rose-500 hover:bg-rose-600 active:bg-rose-700`}
-              onClick={() => {
-                setIsWeatherDialogOpen(false)
-              }}
-            />
-          </div>
-        </SimpleCard>
-      </Dialog>
-      <Dialog open={isImagesDialogOpen}>
-        <SimpleCard
-          direction={tw`flex-col`}
-          alignItems={tw`items-start`}
-          customStyles={tw`shrink`}
-        >
-          {
-            images === null
-              ? (
-                <div tw="flex w-full h-full items-center justify-center">
-                  <Spinner />
-                </div>
-              )
-              : (
-                <>
-                  {
-                    images.wordcloud && (
-                      <SimpleCard direction={tw`flex-col`} alignItems={tw`items-start`}>
-                        <h1>ワードクラウド</h1>
-                        <img src={images.wordcloud} alt="ワードクラウド" tw="flex w-full rounded-lg my-0" />
-                      </SimpleCard>
-                    )
-                  }
-                  {
-                    images.networkUrl && (
-                      <SimpleCard direction={tw`flex-col`} alignItems={tw`items-start`}>
-                        <h1>ネットワーク</h1>
-                        <img src={images.networkUrl} alt="ネットワーク" tw="flex w-full rounded-lg my-0" />
-                      </SimpleCard>
-                    )
-                  }
-                </>
-              )
-          }
-          <div tw="flex w-full justify-end items-center gap-4">
-            <TextButton
-              label="閉じる"
-              backgroundColor={tw`bg-rose-500 hover:bg-rose-600 active:bg-rose-700`}
-              onClick={() => setIsImagesDialogOpen(false)}
-            />
-          </div>
-        </SimpleCard>
-      </Dialog>
     </Layout>
   )
 }

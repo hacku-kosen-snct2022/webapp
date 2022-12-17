@@ -4,9 +4,9 @@ import { convertWeather, unitpost as UnitPost } from '../../util'
 import { IconButton } from '../button'
 import { BaseCardProperties } from './'
 
-interface License{
+export interface License {
   lib: string,
-  license:string
+  license: JSX.Element
 }
 
 type LicenseCardProperties = BaseCardProperties & {
