@@ -70,7 +70,10 @@ export class unitpost {
       credentials: "include",
       referrerPolicy: "strict-origin-when-cross-origin",
       referrer: currenturl,
-      cache: "no-store"
+      cache: "no-store",
+      headers: {
+        origin: "https://hackukosen.web.app"
+      }
     })
     const data = await res.json()
     const pre = data.response.location[0].prefecture
