@@ -143,11 +143,9 @@ export const TimelinePage: React.FC = () => {
                   unitPost.placeName = null
                 } else {
                   setIsPlaceLoading(true)
-                  const position = await new Promise<GeolocationPosition>((resolve, reject) => {
-                    navigator.geolocation.getCurrentPosition(resolve, reject)
-                  })
-                  await unitPost.setPlace(position)
-                  setIsPlaceLoading(false)
+                  navigator.geolocation.getCurrentPosition((position) => {
+                    unitPost.setPlace(position).then(() => setIsPlaceLoading(false));
+                  });
                 }
               }}
               loading={isPlaceLoading}
