@@ -87,13 +87,13 @@ export const LicensePage: React.FC = () => {
       )
     },
     {
-      License: (
+      lib: 'HeartRails Geo API',
+      license: (
         <span>出典:<Link href="https://nlftp.mlit.go.jp/">「位置参照情報」(国土交通省)</Link>
           の加工情報・
           <Link href="https://geoapi.heartrails.com/">「HeartRails Geo API」(HeartRails Inc.)</Link>
         </span>
-      ),
-      lib: ''
+      )
     }
   ]
 
