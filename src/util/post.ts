@@ -66,7 +66,8 @@ export class unitpost {
     this.place = { lat: position.coords.latitude, lng: position.coords.longitude }
     const url = `http://geoapi.heartrails.com/api/json?method=searchByGeoLocation&x=${this.place.lng}&y=${this.place.lat}`
     const res = await fetch(url, {
-      mode: 'cors'
+      mode: 'cors',
+      credentials: "include"
     })
     const data = await res.json()
     const pre = data.response.location[0].prefecture
