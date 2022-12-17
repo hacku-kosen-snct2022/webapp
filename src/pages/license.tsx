@@ -42,7 +42,7 @@ export const LicensePage: React.FC = () => {
       lib: 'Wordcloud',
       license: (
         <span>
-          MIT
+          <Link href="https://github.com/amueller/word_cloud/blob/master/LICENSE">MIT</Link>
         </span>
       )
     },
