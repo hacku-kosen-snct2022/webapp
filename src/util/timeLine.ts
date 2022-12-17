@@ -150,7 +150,7 @@ export class timeLine {
     const docSnap = await getDoc(docRef);
     const data = docSnap.data();
     if (data === undefined) return null;
-    return { "wordcloud": data.wordcloudUrl as string, "networkUrl": data.networkUrl as string }
+    return { "wordcloud": data.wordcloudUrl as string, "networkUrl": data.networkGraphUrl as string }
   }
 
   rewriteFlag() {

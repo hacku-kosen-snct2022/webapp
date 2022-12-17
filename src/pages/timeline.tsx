@@ -2,6 +2,7 @@
 
 import { Icon } from '@iconify/react'
 import { useStore } from '@nanostores/preact'
+import { doc, onSnapshot } from 'firebase/firestore'
 import React, { createRef, useEffect, useState } from 'react'
 import tw from 'twin.macro'
 import { useLocation } from 'wouter'
@@ -10,7 +11,7 @@ import {
   SinglelineText, Spacer, Spinner, TextButton, Timeline, TimelineCard
 } from '../components'
 import { appUserStore } from '../store'
-import { convertWeather, timeLine, unitpost as UnitPost } from '../util'
+import { AppUser, convertWeather, timeLine, unitpost as UnitPost } from '../util'
 
 // eslint-disable-next-line max-lines-per-function,max-statements,sonarjs/cognitive-complexity
 export const TimelinePage: React.FC = () => {
@@ -45,6 +46,17 @@ export const TimelinePage: React.FC = () => {
       })
     }
   }, [appUser, topicName])
+
+  useEffect(() => {
+    const docRef = doc(AppUser.getCollectionRef(), "topics", topicName, "analytics");
+    const unsubscribe = onSnapshot(docRef, (doc) => {
+      const data = doc.data();
+      if (data) {
+        setImages({ wordcloud: data.wordcloudUrl, networkUrl: data.networkGraphUrl });
+      }
+    });
+    return () => { unsubscribe() }
+  }, [])
 
   return (
     <Layout title="タイムライン" direction={tw`flex-col`} justifyContent={tw`justify-start`}>
@@ -373,7 +385,7 @@ export const TimelinePage: React.FC = () => {
                     images.wordcloud && (
                       <SimpleCard direction={tw`flex-col`} alignItems={tw`items-start`}>
                         <h1>ワードクラウド</h1>
-                        <img src={images.wordcloud} alt="ワードクラウド" tw="flex w-full rounded-lg my-0"/>
+                        <img src={images.wordcloud} alt="ワードクラウド" tw="flex w-full rounded-lg my-0" />
                       </SimpleCard>
                     )
                   }
