@@ -144,7 +144,7 @@ export const TimelinePage: React.FC = () => {
                 } else {
                   setIsPlaceLoading(true)
                   navigator.geolocation.getCurrentPosition((position) => {
-                    unitPost.setPlace(position).then(() => setIsPlaceLoading(false));
+                    unitPost.setPlace(position, location).then(() => setIsPlaceLoading(false));
                   });
                 }
               }}
