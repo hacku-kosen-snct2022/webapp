@@ -130,8 +130,7 @@ export const TimelinePage: React.FC = () => {
                   unitPost.placeName = null
                 } else {
                   setIsPlaceLoading(true)
-                  await unitPost.setPlace()
-                  setIsPlaceLoading(false)
+                  await unitPost.setPlace().then(() => setIsPlaceLoading(false))
                 }
               }}
               loading={isPlaceLoading}
