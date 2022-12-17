@@ -7,11 +7,12 @@ type SinglelineTextProperties = BaseTextProperties & {
 }
 
 const SinglelineText =
-  forwardRef<HTMLInputElement, SinglelineTextProperties>(({ placeholder, onChange }, reference) => (
+  forwardRef<HTMLInputElement, SinglelineTextProperties>(({ defaultValue, placeholder, onChange }, reference) => (
     <input
       ref={reference}
       type="text"
       css={{ ...tw`w-full h-12 p-4 shadow rounded-lg` }}
+      defaultValue={defaultValue}
       placeholder={placeholder}
       onChange={onChange}
     />
