@@ -5,8 +5,7 @@ import { IconButton } from '../button'
 import { BaseCardProperties } from './'
 
 type TimelineCardProperties = BaseCardProperties & {
-  unitPost: UnitPost,
-  onWordCloudClick: () => void | Promise<void>
+  unitPost: UnitPost
 }
 
 // eslint-disable-next-line max-lines-per-function
@@ -15,8 +14,7 @@ export const TimelineCard: React.FC<TimelineCardProperties> = ({
   padding = tw`p-4`,
   backgroundColor = tw`bg-neutral-200 hover:bg-neutral-300 active:bg-neutral-400`,
   rounded = tw`rounded-xl`,
-  shadow = tw`shadow shadow-neutral-200`,
-  onWordCloudClick
+  shadow = tw`shadow shadow-neutral-200`
 }) => (
   <article
     css={{
@@ -41,13 +39,6 @@ export const TimelineCard: React.FC<TimelineCardProperties> = ({
     </div>
     <div tw="flex w-full gap-4 flex-wrap">
       <IconButton
-        icon="mdi:cloud"
-        label="ワードクラウドを開く"
-        backgroundColor={tw`bg-neutral-100 hover:bg-neutral-200 active:bg-neutral-300`}
-        onClick={onWordCloudClick}
-        alwaysVisibleLabel
-      />
-      <IconButton
         icon="mdi:clock"
         label={
           new Date(`${unitPost.year}/${unitPost.month}/${unitPost.day} ${unitPost.hour}:${unitPost.minute}`)
@@ -68,7 +59,7 @@ export const TimelineCard: React.FC<TimelineCardProperties> = ({
           padding={tw`px-4 py-2`}
           iconSize={'1.0rem'}
           labelSize={tw`text-base`}
-          backgroundColor={tw`bg-neutral-400 hover:bg-neutral-500 active:bg-neutral-600`}
+          backgroundColor={tw`bg-sky-500 hover:bg-sky-600 active:bg-sky-700`}
           customStyles={tw`h-auto`}
           alwaysVisibleLabel
         />
@@ -81,7 +72,7 @@ export const TimelineCard: React.FC<TimelineCardProperties> = ({
           padding={tw`px-4 py-2`}
           iconSize={'1.0rem'}
           labelSize={tw`text-base`}
-          backgroundColor={tw`bg-neutral-400 hover:bg-neutral-500 active:bg-neutral-600`}
+          backgroundColor={tw`bg-green-500 hover:bg-green-600 active:bg-green-700`}
           customStyles={tw`h-auto`}
           alwaysVisibleLabel
         />

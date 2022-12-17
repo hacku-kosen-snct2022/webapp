@@ -12,15 +12,12 @@ import {
 import { appUserStore } from '../store'
 import { convertWeather, timeLine, unitpost as UnitPost } from '../util'
 
-// eslint-disable-next-line max-lines-per-function,max-statements
+// eslint-disable-next-line max-lines-per-function,max-statements,sonarjs/cognitive-complexity
 export const TimelinePage: React.FC = () => {
   const [isPostMenuOpen, setIsPostMenuOpen] = useState(false)
   const [isFilterMenuOpen, setIsFilterMenuOpen] = useState(false)
-  const [isInspiration, setIsInspiration] = useState(false)
   const [isWeatherDialogOpen, setIsWeatherDialogOpen] = useState(false)
-  const [selectedUnitPost, setSelectedUnitPost] = useState<UnitPost | null>(null)
   const [isPlaceLoading, setIsPlaceLoading] = useState(false)
-  const [isFilterEnabled, setIsFilterEnabled] = useState(false)
   const [filterIsInspiration, setFilterIsInspiration] = useState<boolean | null>(null)
   const [filterBeginDate, setFilterBeginDate] = useState<Date | null>(null)
   const [filterEndDate, setFilterEndDate] = useState<Date | null>(null)
@@ -30,18 +27,24 @@ export const TimelinePage: React.FC = () => {
   const topicName = location.slice(Math.max(0, location.lastIndexOf('/') + 1))
   const [posts, setPosts] = useState<UnitPost[]>([])
   const [isTimelineLoading, setIsTimelineLoading] = useState(true)
+  const [isImagesDialogOpen, setIsImagesDialogOpen] = useState(false)
+  const [images, setImages] = useState<{ wordcloud?: string, networkUrl?: string } | null>(null)
   const appUser = useStore(appUserStore)
 
   useEffect(() => {
-    // eslint-disable-next-line no-void
-    void timeLine.getTimeLine(topicName).then(async (value) => {
-      if (value) {
-        const fetchedPosts = await value.getPosts()
-        if (fetchedPosts) setPosts(fetchedPosts)
-      }
-      setIsTimelineLoading(false)
-    })
-  }, [appUser])
+    if (appUser) {
+      // eslint-disable-next-line no-void
+      void timeLine.getTimeLine(topicName).then(async (value) => {
+        if (value) {
+          const fetchedPosts = await value.getPosts()
+          if (fetchedPosts) setPosts(fetchedPosts)
+          const fetchedImages = await value.getImageUrls()
+          if (fetchedImages) setImages(fetchedImages)
+        }
+        setIsTimelineLoading(false)
+      })
+    }
+  }, [appUser, topicName])
 
   return (
     <Layout title="タイムライン" direction={tw`flex-col`} justifyContent={tw`justify-start`}>
@@ -53,7 +56,7 @@ export const TimelinePage: React.FC = () => {
           label="ひらめき"
           backgroundColor={tw`bg-amber-500 hover:bg-amber-600 active:bg-amber-700`}
           onClick={() => {
-            setIsInspiration(true)
+            setUnitPost(new UnitPost(true, ''))
             if (!isPostMenuOpen) {
               setIsPostMenuOpen(true)
               setIsFilterMenuOpen(false)
@@ -66,7 +69,7 @@ export const TimelinePage: React.FC = () => {
           label="メモ"
           backgroundColor={tw`bg-neutral-400 hover:bg-neutral-500 active:bg-neutral-600`}
           onClick={() => {
-            setIsInspiration(false)
+            setUnitPost(new UnitPost(false, ''))
             if (!isPostMenuOpen) {
               setIsPostMenuOpen(true)
               setIsFilterMenuOpen(false)
@@ -81,7 +84,6 @@ export const TimelinePage: React.FC = () => {
             if (isFilterMenuOpen) {
               setIsFilterMenuOpen(false)
             } else {
-              setIsInspiration(false)
               setUnitPost(new UnitPost(false, ''))
               setIsFilterMenuOpen(true)
               setIsPostMenuOpen(false)
@@ -93,18 +95,17 @@ export const TimelinePage: React.FC = () => {
       <Main
         direction={tw`flex-col`}
         justifyContent={tw`justify-start`}
-        gap={tw`gap-0`}
+        gap={tw`gap-4`}
         customStyles={tw`px-4 max-w-screen-lg`}
       >
         <SimpleCard
           margin={isPostMenuOpen ? tw`mb-4` : tw`mb-0`}
-          padding={tw`p-4`}
           backgroundColor={tw`bg-neutral-200 hover:bg-neutral-300 active:bg-neutral-400`}
           direction={tw`flex-col`}
           alignItems={tw`items-start`}
           customStyles={{ ...(isPostMenuOpen ? tw`h-auto py-4` : tw`h-0 py-0`), ...tw`w-full px-4 overflow-hidden` }}
         >
-          <h1>{isInspiration ? 'ひらめき' : 'メモ'}</h1>
+          <h1>{unitPost.isInspiration ? 'ひらめき' : 'メモ'}</h1>
           <MultilineText ref={textareaReference} placeholder="メモ" />
           <div tw="flex w-full gap-4 flex-wrap">
             <IconButton
@@ -147,7 +148,19 @@ export const TimelinePage: React.FC = () => {
                   unitPost.memo = textareaReference.current.value
                   textareaReference.current.value = ''
                   if (appUser) await appUser.post(topicName, unitPost)
-                  setIsInspiration(false)
+                  setIsTimelineLoading(true)
+                  await timeLine.getTimeLine(topicName).then(async (value) => {
+                    if (value) {
+                      const fetchedPosts = await value.getPosts()
+                      if (fetchedPosts) {
+                        setPosts(fetchedPosts)
+                        setFilterIsInspiration(null)
+                        setFilterBeginDate(null)
+                        setFilterEndDate(null)
+                      }
+                    }
+                  })
+                  setIsTimelineLoading(false)
                   setUnitPost(new UnitPost(false, ''))
                   setIsPostMenuOpen(false)
                 }
@@ -161,7 +174,6 @@ export const TimelinePage: React.FC = () => {
                   // eslint-disable-next-line no-console
                   textareaReference.current.value = ''
                 }
-                setIsInspiration(false)
                 setUnitPost(new UnitPost(false, ''))
                 setIsPostMenuOpen(false)
               }}
@@ -170,7 +182,6 @@ export const TimelinePage: React.FC = () => {
         </SimpleCard>
         <SimpleCard
           margin={isFilterMenuOpen ? tw`mb-4` : tw`mb-0`}
-          padding={tw`p-4`}
           backgroundColor={tw`bg-neutral-200 hover:bg-neutral-300 active:bg-neutral-400`}
           direction={tw`flex-col`}
           alignItems={tw`items-start`}
@@ -203,19 +214,37 @@ export const TimelinePage: React.FC = () => {
             <span>日時:</span>
             <SinglelineText
               placeholder="開始日時（YYYY/MM/DD hh:mm）"
-              onChange={(event) => setFilterBeginDate(new Date(event.currentTarget.value))}
+              onChange={(event) => event.target.value.length > 0 && setFilterBeginDate(new Date(event.target.value))}
             />
             <SinglelineText
               placeholder="終了日時（YYYY/MM/DD hh:mm）"
-              onChange={(event) => setFilterEndDate(new Date(event.currentTarget.value))}
+              onChange={(event) => event.target.value.length > 0 && setFilterEndDate(new Date(event.target.value))}
             />
           </div>
           <div css={tw`flex w-full justify-end items-center gap-4`}>
             <TextButton
               label="適用"
               backgroundColor={tw`bg-lime-500 hover:bg-lime-600 active:bg-lime-700`}
-              onClick={() => {
-                setIsFilterEnabled(true)
+              // eslint-disable-next-line sonarjs/cognitive-complexity
+              onClick={async () => {
+                setIsTimelineLoading(true)
+                await timeLine.getTimeLine(topicName).then(async (value) => {
+                  if (value) {
+                    const fetchedPosts = await value.getPosts()
+                    if (fetchedPosts) {
+                      setPosts(fetchedPosts.filter((post) => {
+                        const date =
+                          new Date(`${post.year}/${post.month}/${post.day} ${post.hour}:${post.minute}`)
+                        if (filterIsInspiration === true && !post.isInspiration) return false
+                        if (filterIsInspiration === false && post.isInspiration) return false
+                        if (filterBeginDate && date < filterBeginDate) return false
+                        if (filterEndDate && date > filterEndDate) return false
+                        return true
+                      }))
+                    }
+                  }
+                  setIsTimelineLoading(false)
+                })
                 setIsFilterMenuOpen(false)
               }}
             />
@@ -223,12 +252,20 @@ export const TimelinePage: React.FC = () => {
               label="キャンセル"
               backgroundColor={tw`bg-rose-500 hover:bg-rose-600 active:bg-rose-700`}
               onClick={() => {
-                setIsFilterEnabled(false)
                 setIsFilterMenuOpen(false)
               }}
             />
           </div>
         </SimpleCard>
+        <IconButton
+          icon="mdi:image"
+          label="ワードクラウド&ネットワーク"
+          backgroundColor={tw`bg-neutral-200 hover:bg-neutral-300 active:bg-neutral-400`}
+          onClick={() => {
+            setIsImagesDialogOpen(!isImagesDialogOpen)
+          }}
+          alwaysVisibleLabel
+        />
         {
           isTimelineLoading
             ? (
@@ -245,7 +282,6 @@ export const TimelinePage: React.FC = () => {
                         <TimelineCard
                           key={post.unitid}
                           unitPost={post}
-                          onWordCloudClick={() => setSelectedUnitPost(post)}
                         />
                       ))
                     }
@@ -264,7 +300,6 @@ export const TimelinePage: React.FC = () => {
       </Main>
       <Dialog open={isWeatherDialogOpen}>
         <SimpleCard
-          padding={tw`p-6`}
           direction={tw`flex-col`}
           alignItems={tw`items-start`}
           customStyles={tw`shrink`}
@@ -320,19 +355,45 @@ export const TimelinePage: React.FC = () => {
           </div>
         </SimpleCard>
       </Dialog>
-      <Dialog open={selectedUnitPost !== null}>
+      <Dialog open={isImagesDialogOpen}>
         <SimpleCard
-          padding={tw`p-6`}
           direction={tw`flex-col`}
           alignItems={tw`items-start`}
           customStyles={tw`shrink`}
         >
-          <h1>&quot;{selectedUnitPost?.memo}&quot;のワードクラウド</h1>
+          {
+            images === null
+              ? (
+                <div tw="flex w-full h-full items-center justify-center">
+                  <Spinner />
+                </div>
+              )
+              : (
+                <>
+                  {
+                    images.wordcloud && (
+                      <SimpleCard direction={tw`flex-col`} alignItems={tw`items-start`}>
+                        <h1>ワードクラウド</h1>
+                        <img src={images.wordcloud} alt="ワードクラウド" tw="flex w-full rounded-lg my-0"/>
+                      </SimpleCard>
+                    )
+                  }
+                  {
+                    images.networkUrl && (
+                      <SimpleCard direction={tw`flex-col`} alignItems={tw`items-start`}>
+                        <h1>ネットワーク</h1>
+                        <img src={images.networkUrl} alt="ネットワーク" tw="flex w-full rounded-lg my-0" />
+                      </SimpleCard>
+                    )
+                  }
+                </>
+              )
+          }
           <div tw="flex w-full justify-end items-center gap-4">
             <TextButton
-              label="キャンセル"
+              label="閉じる"
               backgroundColor={tw`bg-rose-500 hover:bg-rose-600 active:bg-rose-700`}
-              onClick={() => setSelectedUnitPost(null)}
+              onClick={() => setIsImagesDialogOpen(false)}
             />
           </div>
         </SimpleCard>
